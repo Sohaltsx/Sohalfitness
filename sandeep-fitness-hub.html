@@ -1,0 +1,2358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sandeep Singh — Fitness Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+<style>
+  :root {--gold:#00E5FF;--gold-dim:#00B8D4;--dark:#000000;--card:#0a0a0a;--card2:#111111;--border:#1a2a2a;--text:#e0f7fa;--muted:#4a7a7a;--green:#00E5FF;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--dark);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden;}
+  body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 50% at 10% 20%,rgba(0,229,255,.04) 0%,transparent 60%),radial-gradient(ellipse 60% 40% at 90% 80%,rgba(0,184,212,.04) 0%,transparent 60%);pointer-events:none;z-index:0;}
+
+  header{position:relative;z-index:1;padding:40px 28px 24px;border-bottom:1px solid var(--border);background:linear-gradient(180deg,rgba(0,229,255,.06) 0%,transparent 100%);}
+  .gym-logo{display:flex;align-items:center;gap:14px;margin-bottom:8px;}
+  .logo-icon{width:50px;height:50px;background:var(--gold);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;box-shadow:0 0 24px rgba(0,229,255,.4);}
+  .gym-name{font-family:'Bebas Neue',sans-serif;font-size:clamp(30px,6vw,52px);letter-spacing:3px;background:linear-gradient(135deg,#00E5FF,#00B0FF);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;}
+  .gym-sub{color:var(--muted);font-size:15px;letter-spacing:4px;text-transform:uppercase;margin-top:3px;}
+  .member-badge{display:inline-flex;align-items:center;gap:8px;background:var(--card2);border:1px solid var(--border);border-radius:100px;padding:5px 14px;font-size:17px;color:var(--gold);margin-top:12px;font-weight:500;}
+  .member-badge::before{content:'●';font-size:12px;color:#00E5FF;}
+
+  .stats-bar{position:relative;z-index:1;display:flex;border-bottom:1px solid var(--border);overflow-x:auto;}
+  .stat{flex:1;min-width:80px;padding:16px 18px;border-right:1px solid var(--border);text-align:center;}
+  .stat:last-child{border-right:none;}
+  .stat-val{font-family:'Orbitron',sans-serif;font-size:22px;font-weight:900;color:var(--gold);display:block;}
+  .stat-label{font-size:14px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-top:3px;}
+
+  .today-banner{position:relative;z-index:1;padding:8px 20px;text-align:center;font-size:16px;letter-spacing:.3px;border-bottom:1px solid;}
+  .today-banner.workout{background:rgba(0,229,255,.05);border-color:rgba(0,229,255,.15);color:rgba(0,229,255,.85);}
+  .today-banner.rest{background:rgba(0,229,255,.05);border-color:rgba(0,229,255,.15);color:#00E5FF;}
+
+  /* single-line tabs — no multi-line content ever */
+  .day-tabs{position:sticky;top:0;z-index:10;display:flex;background:var(--dark);border-bottom:1px solid var(--border);overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  .day-tabs::-webkit-scrollbar{height:3px;}.day-tabs::-webkit-scrollbar-thumb{background:var(--gold-dim);}
+  .day-tab{flex-shrink:0;height:44px;padding:0 18px;font-size:15px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap;background:none;border-left:none;border-right:none;border-top:none;user-select:none;line-height:44px;}
+  .day-tab.active{color:var(--gold);border-bottom-color:var(--gold);}
+  .day-tab:hover{color:var(--text);}
+
+  main{position:relative;z-index:1;padding:24px 18px;max-width:900px;margin:0 auto;}
+  .day-panel{display:none;animation:fadeUp .3s ease;}
+  .day-panel.active{display:block;}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+  .day-header{margin-bottom:18px;}
+  .day-title{font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:2px;}
+  .tags{display:flex;gap:7px;flex-wrap:wrap;margin-top:7px;}
+  .muscle-tag{background:rgba(0,229,255,.1);border:1px solid rgba(0,229,255,.3);color:var(--gold);border-radius:5px;padding:3px 9px;font-size:14px;letter-spacing:1.5px;text-transform:uppercase;font-weight:600;}
+  .hint-bar{display:flex;align-items:center;gap:8px;background:rgba(0,229,255,.06);border:1px solid rgba(0,229,255,.18);border-radius:9px;padding:9px 13px;margin-bottom:14px;font-size:16px;color:#00B8D4;}
+
+  .exercises-grid{display:flex;flex-direction:column;gap:9px;}
+  .exercise-card{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:16px 18px;display:flex;gap:14px;align-items:center;transition:border-color .2s,transform .2s,box-shadow .2s;cursor:pointer;position:relative;overflow:hidden;}
+  .exercise-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--gold);opacity:0;transition:opacity .2s;}
+  .exercise-card:hover{border-color:rgba(0,229,255,.35);transform:translateX(4px);box-shadow:0 4px 20px rgba(0,229,255,.1);}
+  .exercise-card:hover::before{opacity:1;}
+  .ex-icon{width:48px;height:48px;border-radius:11px;background:var(--card2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;}
+  .ex-body{flex:1;min-width:0;}
+  .ex-name{font-size:18px;font-weight:600;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .ex-meta{font-size:15px;color:var(--muted);}
+  .yt-badge{display:flex;align-items:center;gap:5px;background:rgba(0,229,255,.1);border:1px solid rgba(0,229,255,.28);border-radius:20px;padding:5px 10px;font-size:15px;color:#00E5FF;font-weight:600;flex-shrink:0;white-space:nowrap;transition:background .2s;}
+  .exercise-card:hover .yt-badge{background:rgba(0,229,255,.2);}
+  .ex-sets{display:flex;gap:5px;align-items:center;flex-shrink:0;}
+  .set-pill{background:var(--card2);border:1px solid var(--border);border-radius:7px;padding:5px 9px;text-align:center;min-width:40px;}
+  .set-pill .set-label{font-size:12px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;}
+  .set-pill .set-val{font-family:'Orbitron',sans-serif;font-size:16px;color:var(--gold);font-weight:700;}
+  .sets-x{color:var(--muted);font-size:15px;font-weight:600;}
+
+  .cardio-card{background:linear-gradient(135deg,rgba(255,69,0,.1),rgba(255,69,0,.03));border:1px solid rgba(255,69,0,.25);border-radius:14px;padding:26px;text-align:center;}
+  .cardio-card .cardio-icon{font-size:44px;margin-bottom:10px;}
+  .cardio-card h3{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px;color:#FF6B35;margin-bottom:5px;}
+  .cardio-card p{color:var(--muted);font-size:17px;}
+  .or-divider{display:flex;align-items:center;gap:12px;margin:16px 0;color:var(--muted);font-size:15px;letter-spacing:2px;}
+  .or-divider::before,.or-divider::after{content:'';flex:1;height:1px;background:var(--border);}
+
+  /* footer removed */
+
+  /* MODAL */
+  .modal-overlay{display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.9);backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:14px;}
+  .modal-overlay.open{display:flex;animation:fadeIn .2s ease;}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  .modal{background:var(--card);border:1px solid var(--border);border-radius:20px;width:100%;max-width:620px;max-height:90vh;overflow:hidden;display:flex;flex-direction:column;animation:slideUp .25s cubic-bezier(.34,1.4,.64,1);box-shadow:0 28px 80px rgba(0,0,0,.7);}
+  @keyframes slideUp{from{opacity:0;transform:translateY(30px) scale(.95)}to{opacity:1;transform:translateY(0) scale(1)}}
+  .modal-header{padding:18px 18px 14px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:12px;flex-shrink:0;}
+  .m-icon{width:44px;height:44px;border-radius:9px;background:var(--card2);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+  .m-title-wrap{flex:1;min-width:0;}
+  .m-name{font-size:20px;font-weight:700;margin-bottom:2px;}
+  .m-meta{font-size:15px;color:var(--muted);}
+  .m-close{width:34px;height:34px;background:var(--card2);border:1px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;color:var(--muted);transition:all .15s;flex-shrink:0;}
+  .m-close:hover{color:#fff;background:#333;}
+  .yt-cta{margin:16px 16px 0;display:flex;flex-direction:column;gap:10px;}
+  .yt-main-btn{display:flex;align-items:center;justify-content:center;gap:10px;background:#FF0000;border-radius:12px;padding:14px 18px;text-decoration:none;color:#fff;font-size:18px;font-weight:700;transition:background .15s;cursor:pointer;}
+  .yt-main-btn:hover{background:#cc0000;}
+  .yt-note{font-size:15px;color:var(--muted);text-align:center;}
+  .search-grid{padding:14px 16px 6px;flex-shrink:0;}
+  .search-grid-label{font-size:14px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;}
+  .search-pills{display:flex;flex-wrap:wrap;gap:7px;}
+  .search-pill{background:var(--card2);border:1px solid var(--border);border-radius:20px;padding:6px 12px;font-size:16px;color:var(--text);text-decoration:none;transition:border-color .15s,color .15s;display:flex;align-items:center;gap:5px;white-space:nowrap;}
+  .search-pill:hover{border-color:rgba(0,229,255,.5);color:#00E5FF;}
+  .video-section{padding:0 16px 16px;overflow-y:auto;flex:1;}
+  .video-section-label{font-size:14px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;padding-top:14px;}
+  .video-cards{display:flex;flex-direction:column;gap:12px;}
+  .video-card{display:flex;gap:14px;align-items:center;background:var(--card2);border:1px solid var(--border);border-radius:14px;padding:12px 14px;text-decoration:none;color:var(--text);transition:border-color .15s,transform .15s,box-shadow .15s;}
+  .video-card:hover{border-color:rgba(0,229,255,.4);transform:translateX(4px);box-shadow:0 4px 18px rgba(0,229,255,.08);}
+  .video-thumb{position:relative;width:130px;height:78px;border-radius:10px;overflow:hidden;background:#1a1a1a;flex-shrink:0;}
+  .video-thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+  .thumb-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.25);transition:background .15s;}
+  .video-card:hover .thumb-overlay{background:rgba(0,0,0,.1);}
+  .play-btn{width:36px;height:36px;background:rgba(255,0,0,.92);border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(0,0,0,.5);}
+  .play-btn svg{width:13px;height:13px;margin-left:3px;}
+  .video-info{flex:1;min-width:0;}
+  .video-title{font-size:17px;font-weight:600;line-height:1.4;margin-bottom:5px;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
+  .video-ch{font-size:15px;color:var(--muted);display:flex;align-items:center;gap:5px;}
+  .video-ch::before{content:'';width:6px;height:6px;border-radius:50%;background:#00E5FF;flex-shrink:0;}
+  .open-tag{font-size:14px;background:rgba(0,229,255,.1);color:#00E5FF;border-radius:5px;padding:3px 7px;border:1px solid rgba(0,229,255,.25);flex-shrink:0;font-weight:600;}
+
+  @media(max-width:480px){.ex-sets{display:none;}.modal{max-height:95vh;}.stats-bar{flex-wrap:wrap;}.stat{min-width:50%;border-bottom:1px solid var(--border);}}
+
+  /* ═══ PAGE NAV TABS ═══ */
+  .page-nav{display:flex;background:var(--dark);border-bottom:2px solid var(--border);overflow-x:auto;-webkit-overflow-scrolling:touch;position:sticky;top:0;z-index:20;}
+  .page-nav::-webkit-scrollbar{height:3px;}.page-nav::-webkit-scrollbar-thumb{background:var(--gold-dim);}
+  .page-btn{flex-shrink:0;height:50px;padding:0 22px;font-size:16px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);cursor:pointer;border:none;background:none;border-bottom:3px solid transparent;transition:all .2s;white-space:nowrap;display:flex;align-items:center;gap:7px;}
+  .page-btn.active{color:var(--gold);border-bottom-color:var(--gold);background:rgba(0,229,255,.04);}
+  .page-btn:hover{color:var(--text);}
+  .page-section{display:none;animation:fadeUp .3s ease;}
+  .page-section.active{display:block;}
+
+  /* ═══ BCA SECTION ═══ */
+  .bca-wrap{max-width:900px;margin:0 auto;padding:24px 18px 40px;}
+  .bca-macros{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:24px;}
+  .bca-stat{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:18px 14px;text-align:center;}
+  .bca-stat-val{font-family:'Orbitron',sans-serif;font-size:24px;font-weight:900;color:var(--gold);display:block;line-height:1;}
+  .bca-stat-unit{font-size:15px;color:var(--muted);}
+  .bca-stat-label{font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-top:4px;}
+  .bca-pill{display:inline-flex;align-items:center;gap:4px;font-size:14px;font-weight:700;padding:2px 8px;border-radius:100px;letter-spacing:.5px;margin-top:5px;}
+  .p-over{background:rgba(255,80,80,.15);color:#ff5050;border:1px solid rgba(255,80,80,.3);}
+  .p-normal{background:rgba(0,229,255,.12);color:#00E5FF;border:1px solid rgba(0,229,255,.28);}
+  .p-under{background:rgba(255,200,0,.12);color:#FFD600;border:1px solid rgba(255,200,0,.25);}
+
+  .bca-section-label{font-size:14px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin:20px 0 10px;display:flex;align-items:center;gap:10px;}
+  .bca-section-label::after{content:'';flex:1;height:1px;background:var(--border);}
+
+  .bca-comp-row{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--border);border-radius:11px;padding:13px 16px;margin-bottom:8px;}
+  .bca-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+  .bca-comp-name{font-size:17px;font-weight:600;color:var(--text);flex:1;}
+  .bca-comp-sub{font-size:15px;color:var(--muted);}
+  .bca-comp-val{font-family:'Orbitron',sans-serif;font-size:16px;color:var(--gold);font-weight:700;text-align:right;min-width:60px;}
+
+  .bca-bar-row{display:flex;flex-direction:column;gap:4px;margin-top:4px;}
+  .bca-bar-track{height:7px;background:var(--card2);border-radius:100px;position:relative;overflow:hidden;}
+  .bca-bar-fill{height:100%;border-radius:100px;}
+  .bca-bar-meta{display:flex;justify-content:space-between;font-size:14px;color:var(--muted);font-family:'Orbitron',sans-serif;}
+
+  .bca-2col{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px;}
+  .bca-mini{background:var(--card);border:1px solid var(--border);border-radius:11px;padding:14px;}
+  .bca-mini-label{font-size:13px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+  .bca-mini-val{font-family:'Orbitron',sans-serif;font-size:22px;font-weight:900;line-height:1;}
+
+  .wc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+  .wc-card{background:var(--card);border:1px solid var(--border);border-radius:11px;padding:12px 10px;text-align:center;}
+  .wc-val{font-family:'Orbitron',sans-serif;font-size:20px;font-weight:900;}
+  .wc-lbl{font-size:13px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-top:4px;}
+  .wc-pos{color:#00ff88;}.wc-neg{color:#ff5050;}.wc-n{color:var(--gold);}
+
+  .seg-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .seg-card{background:var(--card);border:1px solid var(--border);border-radius:11px;padding:14px;}
+  .seg-title{font-size:14px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+  .seg-item{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--border);}
+  .seg-item:last-child{border-bottom:none;}
+  .seg-part{font-size:15px;color:var(--text);}
+  .seg-data{font-family:'Orbitron',sans-serif;font-size:15px;font-weight:700;}
+
+  .score-banner{background:linear-gradient(135deg,rgba(0,229,255,.08),rgba(0,184,212,.04));border:1px solid rgba(0,229,255,.25);border-radius:13px;padding:20px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:20px;flex-wrap:wrap;}
+  .score-big{font-family:'Orbitron',sans-serif;font-size:56px;font-weight:900;color:var(--gold);line-height:1;}
+  .score-info-title{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:2px;color:var(--text);}
+  .score-info-sub{font-size:16px;color:var(--muted);margin-top:4px;}
+
+  /* ═══ DIET SECTION ═══ */
+  .diet-wrap{max-width:900px;margin:0 auto;padding:24px 18px 40px;}
+  .diet-macros{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px;}
+  .diet-macro{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:16px 12px;text-align:center;}
+  .dm-val{font-family:'Orbitron',sans-serif;font-size:22px;font-weight:900;color:var(--gold);line-height:1;}
+  .dm-unit{font-size:14px;color:var(--muted);}
+  .dm-lbl{font-size:13px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-top:4px;}
+
+  .meal-card-d{background:var(--card);border:1px solid var(--border);border-radius:13px;margin-bottom:10px;overflow:hidden;}
+  .meal-hdr{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;transition:background .2s;user-select:none;}
+  .meal-hdr:hover,.meal-card-d.open .meal-hdr{background:var(--card2);}
+  .meal-time-d{background:var(--gold);color:#000;font-family:'Orbitron',sans-serif;font-size:13px;font-weight:900;padding:4px 9px;border-radius:5px;white-space:nowrap;flex-shrink:0;letter-spacing:.5px;}
+  .meal-name-d{font-size:18px;font-weight:700;flex:1;color:var(--text);}
+  .meal-kcal-d{font-family:'Orbitron',sans-serif;font-size:15px;color:var(--gold);flex-shrink:0;}
+  .meal-chev{font-size:15px;color:var(--muted);transition:transform .3s;flex-shrink:0;}
+  .meal-card-d.open .meal-chev{transform:rotate(180deg);}
+  .meal-body-d{display:none;padding:0 16px 16px;border-top:1px solid var(--border);}
+  .meal-card-d.open .meal-body-d{display:block;}
+
+  .food-grid-d{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:8px;margin-top:12px;}
+  .food-item-d{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:11px;display:flex;gap:9px;}
+  .food-emoji-d{font-size:22px;flex-shrink:0;line-height:1;}
+  .food-name-d{font-size:16px;font-weight:600;color:var(--text);line-height:1.3;}
+  .food-qty-d{font-size:14px;color:var(--muted);margin-top:2px;font-family:'Orbitron',sans-serif;letter-spacing:.3px;font-size:13px;}
+  .food-tags-d{display:flex;gap:4px;margin-top:4px;flex-wrap:wrap;}
+  .ft{font-size:13px;padding:2px 6px;border-radius:3px;font-weight:700;letter-spacing:.5px;}
+  .ft-p{background:rgba(0,229,255,.12);color:#00E5FF;border:1px solid rgba(0,229,255,.2);}
+  .ft-c{background:rgba(255,200,0,.1);color:#FFD600;border:1px solid rgba(255,200,0,.2);}
+  .ft-f{background:rgba(255,80,80,.1);color:#ff8080;border:1px solid rgba(255,80,80,.2);}
+  .ft-v{background:rgba(0,200,80,.1);color:#00c850;border:1px solid rgba(0,200,80,.2);}
+  .ft-nv{background:rgba(255,80,80,.1);color:#ff5050;border:1px solid rgba(255,80,80,.2);}
+
+  .meal-note-d{margin-top:10px;padding:9px 12px;background:rgba(0,229,255,.05);border-left:2px solid rgba(0,229,255,.4);border-radius:6px;font-size:15px;color:#00B8D4;line-height:1.6;}
+  .option-label{font-size:13px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin:12px 0 6px;font-family:'Orbitron',sans-serif;}
+
+  .week-row-d{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;}
+  .day-pill-d{background:var(--card);border:1px solid var(--border);border-radius:9px;padding:7px 10px;font-size:15px;font-family:'Orbitron',sans-serif;color:var(--muted);flex:1;min-width:80px;text-align:center;}
+  .day-pill-d strong{display:block;font-size:14px;color:var(--gold);margin-bottom:2px;font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;}
+  .day-nv{border-color:rgba(255,80,80,.3);background:rgba(255,80,80,.05);}
+  .day-v{border-color:rgba(0,200,80,.3);background:rgba(0,200,80,.05);}
+
+  .tip-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:9px;margin-bottom:20px;}
+  .tip-d{background:var(--card);border:1px solid var(--border);border-radius:11px;padding:14px;}
+  .tip-icon-d{font-size:22px;margin-bottom:6px;}
+  .tip-title-d{font-size:16px;font-weight:700;color:var(--gold);margin-bottom:4px;font-family:'Bebas Neue',sans-serif;letter-spacing:1px;font-size:18px;}
+  .tip-text-d{font-size:15px;color:var(--muted);line-height:1.6;}
+
+  .takeaway-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:9px;}
+  .tw-card{background:var(--card);border-radius:11px;padding:13px;border:1px solid var(--border);}
+  .tw-badge{font-size:13px;font-family:'Orbitron',sans-serif;letter-spacing:1px;margin-bottom:6px;}
+  .tw-text{font-size:15px;color:var(--muted);line-height:1.6;}
+
+  @media(max-width:500px){.bca-macros,.diet-macros,.wc-grid,.bca-2col{grid-template-columns:repeat(2,1fr);}.seg-grid{grid-template-columns:1fr;}.food-grid-d{grid-template-columns:1fr;}}
+
+  /* ═══ AI COACH SECTION ═══ */
+  .ai-btn{background:linear-gradient(135deg,rgba(108,99,255,.15),rgba(0,229,255,.08)) !important;border-bottom-color:transparent !important;}
+  .ai-btn.active{background:linear-gradient(135deg,rgba(108,99,255,.25),rgba(0,229,255,.12)) !important;border-bottom-color:#a78bfa !important;color:#a78bfa !important;}
+
+  .ai-wrap{max-width:900px;margin:0 auto;padding:24px 18px 40px;}
+
+  .ai-hero{background:linear-gradient(135deg,rgba(108,99,255,.12),rgba(0,229,255,.06));border:1px solid rgba(108,99,255,.3);border-radius:16px;padding:24px;margin-bottom:24px;display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap;}
+  .ai-hero-icon{font-size:48px;line-height:1;flex-shrink:0;}
+  .ai-hero-title{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;color:#a78bfa;margin-bottom:4px;}
+  .ai-hero-sub{font-size:16px;color:var(--muted);line-height:1.7;max-width:500px;}
+  .ai-context-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;}
+  .ai-chip{background:rgba(108,99,255,.15);border:1px solid rgba(108,99,255,.3);border-radius:100px;padding:3px 10px;font-size:14px;color:#a78bfa;font-family:'Orbitron',sans-serif;letter-spacing:.5px;}
+
+  .sug-panel{display:none;animation:fadeUp .3s ease;}
+  .sug-panel.active{display:block;}
+  .ai-workout-day-title{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:2px;color:#00E5FF;margin-bottom:12px;padding:10px 16px;background:rgba(0,229,255,.05);border-left:3px solid #00E5FF;border-radius:0 9px 9px 0;}
+  .ai-ex-list{display:flex;flex-direction:column;gap:8px;margin-bottom:8px;}
+  .ai-ex-item{background:var(--card2);border:1px solid var(--border);border-radius:11px;padding:13px 14px;display:flex;gap:12px;align-items:flex-start;transition:border-color .2s;}
+  .ai-ex-item:hover{border-color:rgba(0,229,255,.3);}
+  .ai-ex-num{font-family:'Orbitron',sans-serif;font-size:14px;color:var(--muted);min-width:26px;padding-top:2px;flex-shrink:0;}
+  .ai-ex-name{font-size:17px;font-weight:700;color:var(--text);margin-bottom:3px;}
+  .ai-ex-detail{font-size:15px;color:var(--muted);line-height:1.5;margin-bottom:3px;}
+  .ai-ex-why{font-size:14px;color:rgba(0,229,255,.7);margin-top:4px;font-style:italic;line-height:1.5;}
+  .ai-ex-tags{display:flex;gap:5px;margin-top:6px;flex-wrap:wrap;}
+  .ai-ex-tag{font-size:13px;padding:2px 7px;border-radius:4px;font-weight:700;letter-spacing:.5px;}
+  .ai-tag-sets{background:rgba(0,229,255,.1);color:#00E5FF;border:1px solid rgba(0,229,255,.2);}
+  .ai-tag-reps{background:rgba(255,200,0,.1);color:#FFD600;border:1px solid rgba(255,200,0,.2);}
+  .ai-tag-focus{background:rgba(167,139,250,.1);color:#a78bfa;border:1px solid rgba(167,139,250,.2);}
+  .ai-day-btn{background:var(--card);border:1px solid var(--border);border-radius:9px;padding:8px 14px;font-size:15px;font-family:'Orbitron',sans-serif;color:var(--muted);cursor:pointer;transition:all .2s;letter-spacing:.5px;}
+  .ai-day-btn:hover{border-color:rgba(167,139,250,.4);color:#a78bfa;}
+  .ai-day-btn.active{background:rgba(108,99,255,.15);border-color:rgba(167,139,250,.5);color:#a78bfa;}
+  .ai-day-btn.today-marker{border-color:rgba(0,229,255,.4);color:#00E5FF;}
+
+  /* Generate button */
+  .ai-gen-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;background:linear-gradient(135deg,#6c3ff5,#4a90e2);border:none;border-radius:12px;padding:16px;font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;color:#fff;cursor:pointer;transition:all .2s;margin-bottom:20px;box-shadow:0 4px 24px rgba(108,63,245,.3);}
+  .ai-gen-btn:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(108,63,245,.45);}
+  .ai-gen-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+  .ai-gen-btn .spin{animation:spin .8s linear infinite;display:inline-block;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  /* Quick prompts */
+  .quick-prompts{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;margin-bottom:20px;}
+  .qp-btn{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 14px;text-align:left;cursor:pointer;transition:all .2s;color:var(--text);}
+  .qp-btn:hover{border-color:rgba(167,139,250,.4);background:rgba(108,99,255,.08);}
+  .qp-icon{font-size:18px;margin-bottom:5px;}
+  .qp-title{font-size:16px;font-weight:700;color:#a78bfa;margin-bottom:2px;}
+  .qp-desc{font-size:14px;color:var(--muted);line-height:1.5;}
+
+  /* Output area */
+  .ai-output{background:var(--card);border:1px solid var(--border);border-radius:14px;min-height:200px;position:relative;overflow:hidden;}
+  .ai-output-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;text-align:center;color:var(--muted);}
+  .ai-output-empty-icon{font-size:40px;margin-bottom:12px;opacity:.4;}
+  .ai-output-empty-text{font-size:17px;line-height:1.6;}
+
+  .ai-response{padding:20px;animation:fadeUp .3s ease;}
+  .ai-response-header{display:flex;align-items:center;gap:10px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+  .ai-response-day{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:2px;color:#a78bfa;}
+  .ai-response-meta{font-size:15px;color:var(--muted);}
+
+  /* Workout suggestion cards */
+  .ai-workout-day{margin-bottom:20px;}
+  .ai-workout-day-title{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;color:#00E5FF;margin-bottom:10px;padding:8px 14px;background:rgba(0,229,255,.05);border-left:3px solid #00E5FF;border-radius:0 8px 8px 0;}
+  .ai-ex-list{display:flex;flex-direction:column;gap:7px;}
+  .ai-ex-item{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;display:flex;gap:12px;align-items:flex-start;}
+  .ai-ex-num{font-family:'Orbitron',sans-serif;font-size:15px;color:var(--muted);min-width:22px;padding-top:1px;}
+  .ai-ex-name{font-size:17px;font-weight:700;color:var(--text);margin-bottom:3px;}
+  .ai-ex-detail{font-size:15px;color:var(--muted);line-height:1.6;}
+  .ai-ex-why{font-size:14px;color:rgba(167,139,250,.8);margin-top:4px;font-style:italic;}
+  .ai-ex-tags{display:flex;gap:5px;margin-top:5px;flex-wrap:wrap;}
+  .ai-ex-tag{font-size:13px;padding:2px 7px;border-radius:4px;font-weight:700;letter-spacing:.5px;}
+  .ai-tag-sets{background:rgba(0,229,255,.1);color:#00E5FF;border:1px solid rgba(0,229,255,.2);}
+  .ai-tag-reps{background:rgba(255,200,0,.1);color:#FFD600;border:1px solid rgba(255,200,0,.2);}
+  .ai-tag-focus{background:rgba(167,139,250,.1);color:#a78bfa;border:1px solid rgba(167,139,250,.2);}
+
+  /* Insight cards */
+  .ai-insights{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:9px;margin-top:16px;}
+  .ai-insight{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:13px;}
+  .ai-insight-label{font-size:13px;font-family:'Orbitron',sans-serif;letter-spacing:1px;text-transform:uppercase;margin-bottom:5px;}
+  .ai-insight-text{font-size:15px;color:var(--muted);line-height:1.6;}
+
+  /* Chat input */
+  .ai-chat-row{display:flex;gap:8px;margin-top:16px;}
+  .ai-input{flex:1;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 16px;font-family:'DM Sans',sans-serif;font-size:17px;color:var(--text);outline:none;transition:border-color .2s;}
+  .ai-input:focus{border-color:rgba(167,139,250,.5);}
+  .ai-input::placeholder{color:var(--muted);}
+  .ai-send-btn{background:rgba(108,99,255,.8);border:none;border-radius:10px;padding:12px 18px;color:#fff;font-size:16px;cursor:pointer;transition:background .2s;flex-shrink:0;}
+  .ai-send-btn:hover{background:rgba(108,99,255,1);}
+  .ai-send-btn:disabled{opacity:.4;cursor:not-allowed;}
+
+  /* Typing indicator */
+  .ai-typing{display:flex;align-items:center;gap:6px;padding:20px;color:var(--muted);font-size:16px;}
+  .ai-dot{width:6px;height:6px;border-radius:50%;background:#a78bfa;animation:blink 1.2s infinite;}
+  .ai-dot:nth-child(2){animation-delay:.2s;}
+  .ai-dot:nth-child(3){animation-delay:.4s;}
+  @keyframes blink{0%,80%,100%{opacity:.2;}40%{opacity:1;}}
+
+  /* Streaming text */
+  .ai-stream-text{padding:20px;font-size:17px;line-height:1.8;color:var(--text);white-space:pre-wrap;word-break:break-word;}
+  .ai-stream-text h3{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1.5px;color:#00E5FF;margin:16px 0 8px;}
+  .ai-stream-text h4{font-size:17px;font-weight:700;color:#a78bfa;margin:12px 0 5px;}
+  .ai-stream-text strong{color:var(--gold);}
+  .ai-stream-text ul{padding-left:18px;margin:6px 0;}
+  .ai-stream-text li{margin-bottom:4px;color:var(--muted);}
+  .ai-stream-text li strong{color:var(--text);}
+  .cursor-blink::after{content:'▋';animation:blink .7s infinite;color:#a78bfa;}
+
+  @media(max-width:500px){.quick-prompts{grid-template-columns:1fr 1fr;}.ai-insights{grid-template-columns:1fr 1fr;}}
+  /* ═══ DAILY ROUTINE PAGE ═══ */
+  .routine-wrap{max-width:720px;margin:0 auto;padding:28px 18px 60px;}
+
+  .routine-hero{background:linear-gradient(135deg,rgba(0,229,255,.08),rgba(0,184,212,.03));border:1px solid rgba(0,229,255,.2);border-radius:16px;padding:24px;margin-bottom:28px;display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap;}
+  .routine-hero-icon{font-size:52px;line-height:1;flex-shrink:0;}
+  .routine-hero-title{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;color:#00E5FF;margin-bottom:6px;}
+  .routine-hero-sub{font-size:15px;color:var(--muted);line-height:1.7;}
+  .routine-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;}
+  .routine-chip{background:rgba(0,229,255,.1);border:1px solid rgba(0,229,255,.25);border-radius:100px;padding:4px 12px;font-size:13px;color:#00E5FF;font-family:'Orbitron',sans-serif;letter-spacing:.5px;}
+
+  /* Timeline */
+  .timeline{position:relative;padding-left:28px;}
+  .timeline::before{content:'';position:absolute;left:8px;top:8px;bottom:8px;width:2px;background:linear-gradient(180deg,#00E5FF,rgba(0,229,255,.1));}
+
+  .tl-item{position:relative;margin-bottom:8px;animation:fadeUp .4s ease both;}
+  .tl-dot{position:absolute;left:-24px;top:18px;width:14px;height:14px;border-radius:50%;border:2px solid var(--border);background:var(--dark);flex-shrink:0;transition:all .2s;}
+  .tl-item.highlight .tl-dot{background:#00E5FF;border-color:#00E5FF;box-shadow:0 0 10px rgba(0,229,255,.5);}
+  .tl-item.gym-block .tl-dot{background:#a78bfa;border-color:#a78bfa;box-shadow:0 0 10px rgba(167,139,250,.5);}
+  .tl-item.food-block .tl-dot{background:#FFD600;border-color:#FFD600;box-shadow:0 0 8px rgba(255,214,0,.4);}
+  .tl-item.work-block .tl-dot{background:#00ff88;border-color:#00ff88;box-shadow:0 0 8px rgba(0,255,136,.4);}
+  .tl-item.rest-block .tl-dot{background:#ff8080;border-color:#ff8080;box-shadow:0 0 8px rgba(255,128,128,.3);}
+
+  .tl-card{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:14px 16px;display:flex;gap:14px;align-items:flex-start;transition:border-color .2s,transform .15s;}
+  .tl-card:hover{border-color:rgba(0,229,255,.25);transform:translateX(3px);}
+  .tl-item.highlight .tl-card{border-color:rgba(0,229,255,.3);background:rgba(0,229,255,.04);}
+  .tl-item.gym-block .tl-card{border-color:rgba(167,139,250,.3);background:rgba(167,139,250,.04);}
+  .tl-item.food-block .tl-card{border-color:rgba(255,214,0,.25);background:rgba(255,214,0,.03);}
+  .tl-item.work-block .tl-card{border-color:rgba(0,255,136,.2);background:rgba(0,255,136,.03);}
+  .tl-item.rest-block .tl-card{border-color:rgba(255,128,128,.2);background:rgba(255,128,128,.03);}
+
+  .tl-emoji{font-size:26px;line-height:1;flex-shrink:0;margin-top:2px;}
+  .tl-time{font-family:'Orbitron',sans-serif;font-size:14px;font-weight:700;color:var(--gold);white-space:nowrap;flex-shrink:0;min-width:90px;margin-top:3px;}
+  .tl-content{flex:1;}
+  .tl-title{font-size:16px;font-weight:700;color:var(--text);margin-bottom:3px;}
+  .tl-desc{font-size:14px;color:var(--muted);line-height:1.6;}
+  .tl-tag{display:inline-block;font-size:12px;font-family:'Orbitron',sans-serif;padding:2px 9px;border-radius:4px;margin-top:6px;letter-spacing:.5px;font-weight:700;}
+  .tl-tag-gym{background:rgba(167,139,250,.15);color:#a78bfa;border:1px solid rgba(167,139,250,.3);}
+  .tl-tag-food{background:rgba(255,214,0,.12);color:#FFD600;border:1px solid rgba(255,214,0,.25);}
+  .tl-tag-work{background:rgba(0,255,136,.1);color:#00ff88;border:1px solid rgba(0,255,136,.2);}
+  .tl-tag-rest{background:rgba(255,128,128,.1);color:#ff8080;border:1px solid rgba(255,128,128,.2);}
+  .tl-tag-morning{background:rgba(0,229,255,.1);color:#00E5FF;border:1px solid rgba(0,229,255,.25);}
+
+  .routine-section-label{font-size:14px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin:28px 0 16px;display:flex;align-items:center;gap:10px;font-family:'Orbitron',sans-serif;}
+  .routine-section-label::after{content:'';flex:1;height:1px;background:var(--border);}
+
+  .prep-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px;margin-bottom:24px;}
+  .prep-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 16px;}
+  .prep-icon{font-size:22px;margin-bottom:7px;}
+  .prep-title{font-size:15px;font-weight:700;color:#00E5FF;margin-bottom:4px;font-family:'Bebas Neue',sans-serif;letter-spacing:1px;font-size:17px;}
+  .prep-text{font-size:13px;color:var(--muted);line-height:1.6;}
+
+  .it-tip-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px;}
+  .it-tip{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 16px;}
+  .it-tip-icon{font-size:22px;margin-bottom:6px;}
+  .it-tip-title{font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:1px;color:#00E5FF;margin-bottom:4px;}
+  .it-tip-text{font-size:13px;color:var(--muted);line-height:1.6;}
+
+  @media(max-width:500px){.tl-time{min-width:72px;font-size:12px;}.tl-title{font-size:15px;}.timeline{padding-left:22px;}.tl-dot{left:-18px;}}
+  /* ═══ GOAL TIMELINE PAGE ═══ */
+  .goal-wrap{max-width:720px;margin:0 auto;padding:28px 18px 60px;}
+
+  .goal-hero{background:linear-gradient(135deg,rgba(167,139,250,.1),rgba(0,229,255,.05));border:1px solid rgba(167,139,250,.3);border-radius:16px;padding:24px;margin-bottom:28px;display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap;}
+  .goal-hero-icon{font-size:52px;line-height:1;flex-shrink:0;}
+  .goal-hero-title{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;color:#a78bfa;margin-bottom:6px;}
+  .goal-hero-sub{font-size:15px;color:var(--muted);line-height:1.7;}
+
+  /* Big stat row */
+  .goal-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:28px;}
+  .goal-stat{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:18px 14px;text-align:center;}
+  .goal-stat-val{font-family:'Orbitron',sans-serif;font-size:22px;font-weight:900;line-height:1;display:block;margin-bottom:4px;}
+  .goal-stat-label{font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;}
+
+  /* Month cards */
+  .month-timeline{display:flex;flex-direction:column;gap:12px;margin-bottom:28px;}
+  .month-card{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:border-color .2s;}
+  .month-card:hover{border-color:rgba(167,139,250,.3);}
+  .month-header{display:flex;align-items:center;gap:14px;padding:16px 18px;cursor:pointer;user-select:none;}
+  .month-header:hover{background:var(--card2);}
+  .month-card.open .month-header{background:var(--card2);}
+  .month-num{font-family:'Orbitron',sans-serif;font-size:13px;font-weight:900;width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .month-title-wrap{flex:1;}
+  .month-title{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1.5px;color:var(--text);}
+  .month-subtitle{font-size:13px;color:var(--muted);margin-top:2px;}
+  .month-badge{font-family:'Orbitron',sans-serif;font-size:11px;padding:4px 10px;border-radius:6px;font-weight:700;flex-shrink:0;}
+  .month-chev{font-size:12px;color:var(--muted);transition:transform .3s;flex-shrink:0;margin-left:6px;}
+  .month-card.open .month-chev{transform:rotate(180deg);}
+
+  .month-body{display:none;padding:0 18px 18px;border-top:1px solid var(--border);}
+  .month-card.open .month-body{display:block;}
+
+  .month-progress-row{display:flex;align-items:center;gap:12px;margin:14px 0 6px;}
+  .month-progress-label{font-size:13px;color:var(--muted);min-width:90px;}
+  .month-progress-track{flex:1;height:10px;background:var(--card2);border-radius:100px;overflow:hidden;}
+  .month-progress-fill{height:100%;border-radius:100px;transition:width 1s ease;}
+  .month-progress-val{font-family:'Orbitron',sans-serif;font-size:12px;font-weight:700;min-width:50px;text-align:right;}
+
+  .month-items{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;}
+  .month-item{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:11px 13px;}
+  .month-item-label{font-size:12px;color:var(--muted);margin-bottom:4px;font-family:'Orbitron',sans-serif;letter-spacing:.5px;}
+  .month-item-val{font-size:15px;font-weight:700;color:var(--text);}
+
+  .month-milestones{margin-top:12px;}
+  .milestone{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--border);}
+  .milestone:last-child{border-bottom:none;}
+  .ms-icon{font-size:16px;flex-shrink:0;margin-top:1px;}
+  .ms-text{font-size:14px;color:var(--muted);line-height:1.5;}
+  .ms-text strong{color:var(--text);}
+
+  /* Risk / accelerator cards */
+  .factor-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;}
+  .factor-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 16px;}
+  .factor-title{font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:1px;margin-bottom:8px;}
+  .factor-item{display:flex;gap:8px;font-size:13px;color:var(--muted);line-height:1.5;margin-bottom:5px;}
+
+  /* Final target card */
+  .target-card{background:linear-gradient(135deg,rgba(0,255,136,.06),rgba(0,229,255,.04));border:1px solid rgba(0,255,136,.25);border-radius:16px;padding:24px;text-align:center;margin-bottom:20px;}
+  .target-title{font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:2px;color:#00ff88;margin-bottom:8px;}
+  .target-sub{font-size:15px;color:var(--muted);line-height:1.8;}
+  .target-date{font-family:'Orbitron',sans-serif;font-size:18px;font-weight:900;color:#00E5FF;margin:12px 0 4px;}
+
+  /* Weigh-in reminder */
+  .weigh-in{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 18px;display:flex;gap:14px;align-items:center;}
+  .weigh-in-icon{font-size:28px;flex-shrink:0;}
+  .weigh-in-title{font-size:16px;font-weight:700;color:#00E5FF;margin-bottom:3px;}
+  .weigh-in-text{font-size:13px;color:var(--muted);line-height:1.6;}
+
+  @media(max-width:500px){.goal-stats{grid-template-columns:1fr 1fr;}.month-items{grid-template-columns:1fr;}.factor-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="gym-logo">
+    <div class="logo-icon">🏋️</div>
+    <div><div class="gym-name">Sandeep Singh — Fitness Hub</div><div class="gym-sub">Gold's Gym Mohali · BCA · Diet · Training</div></div>
+  </div>
+  <div class="member-badge">Member: Sandeep Singh &nbsp;·&nbsp; InBody 230 · 68.1 kg · 32.7% PBF</div>
+</header>
+
+<!-- PAGE NAV -->
+<nav class="page-nav">
+  <button class="page-btn active" data-page="workout" onclick="switchPage('workout',this)">🏋️ &nbsp;Workout</button>
+  <button class="page-btn" data-page="bca" onclick="switchPage('bca',this)">📊 &nbsp;BCA Report</button>
+  <button class="page-btn" data-page="diet" onclick="switchPage('diet',this)">🥗 &nbsp;Diet Plan</button>
+  <button class="page-btn ai-btn" data-page="ai" onclick="switchPage('ai',this)">⚡ &nbsp;Suggested Plan</button>
+  <button class="page-btn" data-page="routine" onclick="switchPage('routine',this)" style="border-bottom-color:transparent;">⏰ &nbsp;Daily Routine</button>
+  <button class="page-btn" data-page="goal" onclick="switchPage('goal',this)" style="border-bottom-color:transparent;">🎯 &nbsp;Goal Timeline</button>
+</nav>
+
+<!-- ══════════════════════════ WORKOUT PAGE ══════════════════════════ -->
+<div class="page-section active" id="page-workout">
+
+<div class="stats-bar">
+  <div class="stat"><span class="stat-val">6</span><div class="stat-label">Training Days</div></div>
+  <div class="stat"><span class="stat-val">3</span><div class="stat-label">Sets / Exercise</div></div>
+  <div class="stat"><span class="stat-val">12</span><div class="stat-label">Reps / Set</div></div>
+  <div class="stat"><span class="stat-val">26</span><div class="stat-label">Total Exercises</div></div>
+</div>
+
+<div class="day-tabs" id="day-tabs">
+  <button class="day-tab" data-index="0">Mon · Chest &amp; Shoulders</button>
+  <button class="day-tab" data-index="1">Tue · Back &amp; Biceps</button>
+  <button class="day-tab" data-index="2">Wed · Legs</button>
+  <button class="day-tab" data-index="3">Thu · Chest &amp; Triceps</button>
+  <button class="day-tab" data-index="4">Fri · Back &amp; Biceps</button>
+  <button class="day-tab" data-index="5">Sat · Cardio</button>
+</div>
+
+<main>
+
+<!-- DAY 1 -->
+<div class="day-panel" id="panel-0">
+  <div class="day-header"><div class="day-title">Day 1 — Chest &amp; Shoulders</div><div class="tags"><span class="muscle-tag">Chest</span><span class="muscle-tag">Shoulders</span><span class="muscle-tag">Triceps</span></div></div>
+  <div class="hint-bar">▶ Tap any exercise to find tutorial videos on YouTube</div>
+  <div class="exercises-grid">
+    <div class="exercise-card" onclick="openModal('Flat Bench Press','🏋️','Barbell · Chest compound')"><div class="ex-icon">🏋️</div><div class="ex-body"><div class="ex-name">Flat Bench Press</div><div class="ex-meta">Barbell · Chest compound</div></div><div class="yt-badge">▶ Watch</div><div class="ex-sets"><div class="set-pill"><div class="set-label">Sets</div><div class="set-val">3</div></div><div class="sets-x">×</div><div class="set-pill"><div class="set-label">Reps</div><div class="set-val">12</div></div></div></div>
+    <div class="exercise-card" onclick="openModal('Incline DB Press','📐','Dumbbell · Upper chest')"><div class="ex-icon">📐</div><div class="ex-body"><div class="ex-name">Incline DB Press</div><div class="ex-meta">Dumbbell · Upper chest</div></div><div class="yt-badge">▶ Watch</div><div class="ex-sets"><div class="set-pill"><div class="set-label">Sets</div><div class="set-val">3</div></div><div class="sets-x">×</div><div class="set-pill"><div class="set-label">Reps</div><div class="set-val">12</div></div></div></div>
+    <div class="exercise-card" onclick="openModal('Lateral Raise','🦅','Dumbbell · Side deltoid')"><div class="ex-icon">🦅</div><div class="ex-body"><div class="ex-name">Lateral Raise</div><div class="ex-meta">Dumbbell · Side deltoid</div></div><div class="yt-badge">▶ Watch</div><div class="ex-sets"><div class="set-pill"><div class="set-label">Sets</div><div class="set-val">3</div></div><div class="sets-x">×</div><div class="set-pill"><div class="set-label">Reps</div><div class="set-val">12</div></div></div></div>
+    <div class="exercise-card" onclick="openModal('Shoulder Press','💪','Overhead · Front &amp; side delt')"><div class="ex-icon">💪</div><div class="ex-body"><div class="ex-name">Shoulder Press</div><div class="ex-meta">Overhead · Front &amp; side delt</div></div><div class="yt-badge">▶ Watch</div><div class="ex-sets"><div class="set-pill"><div class="set-label">Sets</div><div class="set-val">3</div></div><div class="sets-x">×</div><div class="set-pill"><div class="set-label">Reps</div><div class="set-val">12</div></div></div></div>
+    <div class="exercise-card" onclick="openModal('Triceps Pushdown','🔽','Cable · Triceps isolation')"><div class="ex-icon">🔽</div><div class="ex-body"><div class="ex-name">Triceps Pushdown</div><div class="ex-meta">Cable · Triceps isolation</div></div><div class="yt-badge">▶ Watch</div><div class="ex-sets"><div class="set-pill"><div class="set-label">Sets</div><div class="set-val">3</div></div><div class="sets-x">×</div><div class="set-pill"><div class="set-label">Reps</div><div class="set-val">12</div></div></div></div>
+    <div class="exercise-card" onclick="openModal('Skull Crusher','💀','Barbell · Triceps long head')"><div class="ex-icon">💀</div><div class="ex-body"><div class="ex-name">Skull Crusher</div><div class="ex-meta">Barbell · Triceps long head</div></div><div class="yt-badge">▶ Watch</div><div class="ex-sets"><div class="set-pill"><div class="set-label">Sets</div><div class="set-val">3</div></div><div class="sets-x">×</div><div class="set-pill"><div class="set-label">Reps</div><div class="set-val">12</div></div></div></div>
+  </div>
+</div>
+
+<!-- DAY 2 -->
+<div class="day-panel" id="panel-1">
+  <div class="day-header"><div class="day-title">Day 2 — Back &amp; Biceps</div><div class="tags"><span class="muscle-tag">Back</span><span class="muscle-tag">Biceps</span><span class="muscle-tag">Lats</span></div></div>
+  <div class="hint-bar">▶ Tap any exercise to find tutorial videos on YouTube</div>
+  <div class="exercises-grid">
+    <div class="exercise-card" onclick="openModal('Lat Pulldown','⬇️','Cable · Wide grip lat focus')"><div class="ex-icon">⬇️</div><div class="ex-body"><div class="ex-name">Lat Pulldown</div><div class="ex-meta">Cable · Wide grip lat focus</div></div><div class="yt-badge">▶ Watch</div><div class="ex-sets"><div class="set-pill"><div class="set-label">Sets</div><div class="set-val">3</div></div><div class="sets-x">×</div><div class="set-pill"><div class="set-label">Reps</div><div class="set-val">12</div></div></div></div>
+    <div class="exercise-card" onclick="openModal('Seated Rowing','🚣','Cable · Mid-back thickness')"><div class="ex-icon">🚣</div><div class="ex-body"><div class="ex-name">Seated Rowing</div><div class="ex-meta">Cable · Mid-back thickness</div></div><div class="yt-badge">▶ Watch</div><div class="ex-sets"><div class="set-pill"><div class="set-label">Sets</div><div class="set-val">3</div></div><div class="sets-x">×</div><div class="set-pill"><div class="set-label">Reps</div><div class="set-val">12</div></div></div></div>
+    <div class="exercise-card" onclick="openModal('Bent Over Row','🏔️','Barbell · Full back compound')"><div class="ex-icon">🏔️</div><div class="ex-body"><div class="ex-name">Bent Over Row</div><div class="ex-meta">Barbell · Full back compound</div></div><div class="yt-badge">▶ Watch</div><div class="ex-sets"><div class="set-pill"><div class="set-label">Sets</div><div class="set-val">3</div></div><div class="sets-x">×</div><div class="set-pill"><div class="set-label">Reps</div><div class="set-val">12</div></div></div></div>
+    <div class="exercise-card" onclick="openModal('Face Pull','🎯','Cable · Rear delt &amp; rhomboids')"><div class="ex-icon">🎯</div><div class="ex-body"><div class="ex-name">Face Pully</div><div class="ex-meta">Cable · Rear delt &amp; rhomboids</div></div><div class="yt-badge">▶ Watch</div><div class="ex-sets"><div class="set-pill"><div class="set-label">Sets</div><div class="set-val">3</div></div><div class="sets-x">×</div><div class="set-pill"><div class="set-label">Reps</div><div class="set-val">12</div></div></div></div>
+    <div class="exercise-card" onclick="openModal('Hammer Curl','🔨','Dumbbell · Brachialis &amp; biceps')"><div class="ex-icon">🔨</div><div class="ex-body"><div class="ex-name">Hammer Curl</div><div class="ex-meta">Dumbbell · Brachialis &amp; biceps</div></div><div class="yt-badge">▶ Watch</div><div class="ex-sets"><div class="set-pill"><div class="set-label">Sets</div><div class="set-val">3</div></div><div class="sets-x">×</div><div class="set-pill"><div class="set-label">Reps</div><div class="set-val">12</div></div></div></div>
+    <div class="exercise-card" onclick="openModal('DB Curl','🌀','Dumbbell · Biceps peak')"><div class="ex-icon">🌀</div><div class="ex-body"><div class="ex-name">DB Curl</div><div class="ex-meta">Dumbbell · Biceps peak</div></div><div class="yt-badge">▶ Watch</div><div class="ex-sets"><div class="set-pill"><div class="set-label">Sets</div><div class="set-val">3</div></div><div class="sets-x">×</div><div class="set-pill"><div class="set-label">Reps</div><div class="set-val">12</div></div></div></div>
+  </div>
+</div>
+
+<!-- DAY 3 -->
+<div class="day-panel" id="panel-2">
+  <div class="day-header"><div class="day-title">Day 3 — Legs</div><div class="tags"><span class="muscle-tag">Quads</span><span class="muscle-tag">Hamstrings</span><span class="muscle-tag">Glutes</span><span class="muscle-tag">Calves</span></div></div>
+  <div class="hint-bar">▶ Tap any exercise to find tutorial videos on YouTube</div>
+  <div class="exercises-grid">
+    <div class="exercise-card" onclick="openModal('Squats','👑','Barbell · King of leg exercises')"><div class="ex-icon">👑</div><div class="ex-body"><div class="ex-name">Squats</div><div class="ex-meta">Barbell · King of leg exercises</div></div><div class="yt-badge">▶ Watch</div><div class="ex-sets"><div class="set-pill"><div class="set-label">Sets</div><div class="set-val">3</div></div><div class="sets-x">×</div><div class="set-pill"><div class="set-label">Reps</div><div class="set-val">12</div></div></div></div>
+    <div class="exercise-card" onclick="openModal('Leg Press','🦵','Machine · Quad dominant')"><div class="ex-icon">🦵</div><div class="ex-body"><div class="ex-name">Leg Press</div><div class="ex-meta">Machine · Quad dominant</div></div><div class="yt-badge">▶ Watch</div><div class="ex-sets"><div class="set-pill"><div class="set-label">Sets</div><div class="set-val">3</div></div><div class="sets-x">×</div><div class="set-pill"><div class="set-label">Reps</div><div class="set-val">12</div></div></div></div>
+    <div class="exercise-card" onclick="openModal('Leg Extension','⬆️','Machine · Quad isolation')"><div class="ex-icon">⬆️</div><div class="ex-body"><div class="ex-name">Leg Extension</div><div class="ex-meta">Machine · Quad isolation</div></div><div class="yt-badge">▶ Watch</div><div class="ex-sets"><div class="set-pill"><div class="set-label">Sets</div><div class="set-val">3</div></div><div class="sets-x">×</div><div class="set-pill"><div class="set-label">Reps</div><div class="set-val">12</div></div></div></div>
+    <div class="exercise-card" onclick="openModal('Leg Curl','🔁','Machine · Hamstring isolation')"><div class="ex-icon">🔁</div><div class="ex-body"><div class="ex-name">Leg Curl</div><div class="ex-meta">Machine · Hamstring isolation</div></div><div class="yt-badge">▶ Watch</div><div class="ex-sets"><div class="set-pill"><div class="set-label">Sets</div><div class="set-val">3</div></div><div class="sets-x">×</div><div class="set-pill"><div class="set-label">Reps</div><div class="set-val">12</div></div></div></div>
+    <div class="exercise-card" onclick="openModal('ADD-ABD Machine','↔️','Machine · Inner &amp; outer thighs')"><div class="ex-icon">↔️</div><div class="ex-body"><div class="ex-name">ADD-ABD</div><div class="ex-meta">Machine · Inner &amp; outer thighs</div></div><div class="yt-badge">▶ Watch</div><div class="ex-sets"><div class="set-pill"><div class="set-label">Sets</div><div class="set-val">3</div></div><div class="sets-x">×</div><div class="set-pill"><div class="set-label">Reps</div><div class="set-val">12</div></div></div></div>
+    <div class="exercise-card" onclick="openModal('Calf Raises','🦶','Standing raise · Gastrocnemius')"><div class="ex-icon">🦶</div><div class="ex-body"><div class="ex-name">Calves</div><div class="ex-meta">Standing raise · Gastrocnemius</div></div><div class="yt-badge">▶ Watch</div><div class="ex-sets"><div class="set-pill"><div class="set-label">Sets</div><div class="set-val">3</div></div><div class="sets-x">×</div><div class="set-pill"><div class="set-label">Reps</div><div class="set-val">12</div></div></div></div>
+  </div>
+</div>
+
+<!-- DAY 4 -->
+<div class="day-panel" id="panel-3">
+  <div class="day-header"><div class="day-title">Day 4 — Chest &amp; Triceps</div><div class="tags"><span class="muscle-tag">Chest</span><span class="muscle-tag">Triceps</span><span class="muscle-tag">Cable</span></div></div>
+  <div class="hint-bar">▶ Tap any exercise to find tutorial videos on YouTube</div>
+  <div class="exercises-grid">
+    <div class="exercise-card" onclick="openModal('Incline DB Press','📐','Dumbbell · Upper chest')"><div class="ex-icon">📐</div><div class="ex-body"><div class="ex-name">Incline DB Press</div><div class="ex-meta">Dumbbell · Upper chest</div></div><div class="yt-badge">▶ Watch</div><div class="ex-sets"><div class="set-pill"><div class="set-label">Sets</div><div class="set-val">3</div></div><div class="sets-x">×</div><div class="set-pill"><div class="set-label">Reps</div><div class="set-val">12</div></div></div></div>
+    <div class="exercise-card" onclick="openModal('Decline Bench Press','⬇️','Barbell · Lower chest')"><div class="ex-icon">⬇️</div><div class="ex-body"><div class="ex-name">Decline BB Press</div><div class="ex-meta">Barbell · Lower chest</div></div><div class="yt-badge">▶ Watch</div><div class="ex-sets"><div class="set-pill"><div class="set-label">Sets</div><div class="set-val">3</div></div><div class="sets-x">×</div><div class="set-pill"><div class="set-label">Reps</div><div class="set-val">12</div></div></div></div>
+    <div class="exercise-card" onclick="openModal('High-Low Cable Fly','🔀','Cable crossover · Chest fly')"><div class="ex-icon">🔀</div><div class="ex-body"><div class="ex-name">High-Low Cable</div><div class="ex-meta">Cable crossover · Chest fly</div></div><div class="yt-badge">▶ Watch</div><div class="ex-sets"><div class="set-pill"><div class="set-label">Sets</div><div class="set-val">3</div></div><div class="sets-x">×</div><div class="set-pill"><div class="set-label">Reps</div><div class="set-val">12</div></div></div></div>
+    <div class="exercise-card" onclick="openModal('Low-High Cable Fly','🔄','Cable · Upper chest emphasis')"><div class="ex-icon">🔄</div><div class="ex-body"><div class="ex-name">Low-High Cable</div><div class="ex-meta">Cable · Upper chest emphasis</div></div><div class="yt-badge">▶ Watch</div><div class="ex-sets"><div class="set-pill"><div class="set-label">Sets</div><div class="set-val">3</div></div><div class="sets-x">×</div><div class="set-pill"><div class="set-label">Reps</div><div class="set-val">12</div></div></div></div>
+    <div class="exercise-card" onclick="openModal('Skull Crusher','💀','Barbell · Triceps long head')"><div class="ex-icon">💀</div><div class="ex-body"><div class="ex-name">Skull Crusher</div><div class="ex-meta">Barbell · Triceps long head</div></div><div class="yt-badge">▶ Watch</div><div class="ex-sets"><div class="set-pill"><div class="set-label">Sets</div><div class="set-val">3</div></div><div class="sets-x">×</div><div class="set-pill"><div class="set-label">Reps</div><div class="set-val">12</div></div></div></div>
+    <div class="exercise-card" onclick="openModal('Bench Dips','🪑','Bodyweight · Triceps finisher')"><div class="ex-icon">🪑</div><div class="ex-body"><div class="ex-name">Bench Dips</div><div class="ex-meta">Bodyweight · Triceps finisher</div></div><div class="yt-badge">▶ Watch</div><div class="ex-sets"><div class="set-pill"><div class="set-label">Sets</div><div class="set-val">3</div></div><div class="sets-x">×</div><div class="set-pill"><div class="set-label">Reps</div><div class="set-val">12</div></div></div></div>
+  </div>
+</div>
+
+<!-- DAY 5 -->
+<div class="day-panel" id="panel-4">
+  <div class="day-header"><div class="day-title">Day 5 — Back &amp; Biceps</div><div class="tags"><span class="muscle-tag">Back</span><span class="muscle-tag">Biceps</span><span class="muscle-tag">Hamstrings</span></div></div>
+  <div class="hint-bar">▶ Tap any exercise to find tutorial videos on YouTube</div>
+  <div class="exercises-grid">
+    <div class="exercise-card" onclick="openModal('V-Grip Lat Pulldown','🔻','Cable · Close grip · Inner lats')"><div class="ex-icon">🔻</div><div class="ex-body"><div class="ex-name">V-Grip Lat Pulldown</div><div class="ex-meta">Cable · Close grip · Inner lats</div></div><div class="yt-badge">▶ Watch</div><div class="ex-sets"><div class="set-pill"><div class="set-label">Sets</div><div class="set-val">3</div></div><div class="sets-x">×</div><div class="set-pill"><div class="set-label">Reps</div><div class="set-val">12</div></div></div></div>
+    <div class="exercise-card" onclick="openModal('Seated Rowing Wide Grip','🚣','Cable · Wide grip · Upper back')"><div class="ex-icon">🚣</div><div class="ex-body"><div class="ex-name">Seated Rowing (Wide)</div><div class="ex-meta">Cable · Wide grip · Upper back</div></div><div class="yt-badge">▶ Watch</div><div class="ex-sets"><div class="set-pill"><div class="set-label">Sets</div><div class="set-val">3</div></div><div class="sets-x">×</div><div class="set-pill"><div class="set-label">Reps</div><div class="set-val">12</div></div></div></div>
+    <div class="exercise-card" onclick="openModal('Iso-Pulldown','🧘','Machine · Unilateral lat pull')"><div class="ex-icon">🧘</div><div class="ex-body"><div class="ex-name">Iso-Pulldown</div><div class="ex-meta">Machine · Unilateral lat pull</div></div><div class="yt-badge">▶ Watch</div><div class="ex-sets"><div class="set-pill"><div class="set-label">Sets</div><div class="set-val">3</div></div><div class="sets-x">×</div><div class="set-pill"><div class="set-label">Reps</div><div class="set-val">12</div></div></div></div>
+    <div class="exercise-card" onclick="openModal('Deadlift','⚡','Barbell · Full posterior chain')"><div class="ex-icon">⚡</div><div class="ex-body"><div class="ex-name">Deadlift</div><div class="ex-meta">Barbell · Full posterior chain</div></div><div class="yt-badge">▶ Watch</div><div class="ex-sets"><div class="set-pill"><div class="set-label">Sets</div><div class="set-val">3</div></div><div class="sets-x">×</div><div class="set-pill"><div class="set-label">Reps</div><div class="set-val">12</div></div></div></div>
+    <div class="exercise-card" onclick="openModal('Preacher Curl','🙏','Barbell · Lower bicep peak')"><div class="ex-icon">🙏</div><div class="ex-body"><div class="ex-name">Preacher Curl</div><div class="ex-meta">Barbell · Lower bicep peak</div></div><div class="yt-badge">▶ Watch</div><div class="ex-sets"><div class="set-pill"><div class="set-label">Sets</div><div class="set-val">3</div></div><div class="sets-x">×</div><div class="set-pill"><div class="set-label">Reps</div><div class="set-val">12</div></div></div></div>
+    <div class="exercise-card" onclick="openModal('Concentration Curl','🎯','Dumbbell · Bicep isolation &amp; peak')"><div class="ex-icon">🎯</div><div class="ex-body"><div class="ex-name">Concentration Curl</div><div class="ex-meta">Dumbbell · Bicep isolation &amp; peak</div></div><div class="yt-badge">▶ Watch</div><div class="ex-sets"><div class="set-pill"><div class="set-label">Sets</div><div class="set-val">3</div></div><div class="sets-x">×</div><div class="set-pill"><div class="set-label">Reps</div><div class="set-val">12</div></div></div></div>
+  </div>
+</div>
+
+<!-- DAY 6 -->
+<div class="day-panel" id="panel-5">
+  <div class="day-header"><div class="day-title">Day 6 — Active Recovery</div><div class="tags"><span class="muscle-tag" style="background:rgba(0,229,255,.1);border-color:rgba(0,229,255,.3);color:#00E5FF;">Cardio</span></div></div>
+  <div class="cardio-card" style="background:linear-gradient(135deg,rgba(0,229,255,.08),rgba(0,184,212,.03));border-color:rgba(0,229,255,.2);"><div class="cardio-icon">🏃</div><h3 style="color:#00E5FF;">Cardio Session</h3><p>Treadmill · Cross Trainer · Bike / Rower · Arc Trainer</p><p style="margin-top:8px;font-size:12px;">Aim for 30–45 min at moderate intensity</p></div>
+  <div class="or-divider">OR</div>
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:13px;padding:20px;text-align:center;"><div style="font-size:28px;margin-bottom:7px;">🔄</div><div style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;color:var(--gold);">Repeat Day 3</div><div style="color:var(--muted);font-size:12px;margin-top:4px;">Legs · Squats · Press · Extensions</div></div>
+</div>
+
+</main>
+<div style="text-align:center;padding:16px;border-top:1px solid var(--border);color:var(--muted);font-size:15px;letter-spacing:1px;"><span style="color:var(--gold);">Gold's Gym Mohali</span> &nbsp;·&nbsp; Sandeep's Training Program &nbsp;·&nbsp; 3 Sets × 12 Reps</div>
+
+</div><!-- /page-workout -->
+
+<!-- ══════════════════════════ BCA PAGE ══════════════════════════ -->
+<div class="page-section" id="page-bca">
+<div class="bca-wrap">
+
+  <!-- Fitness Score Banner -->
+  <div class="score-banner">
+    <div>
+      <div class="score-big">62</div>
+      <div style="font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-top:4px;">Fitness Score / 100</div>
+    </div>
+    <div style="flex:1;min-width:160px;">
+      <div class="score-info-title">InBody 230 Report</div>
+      <div class="score-info-sub">28 May 2026 · 19:12 &nbsp;·&nbsp; ID 280426-3</div>
+      <div class="score-info-sub" style="margin-top:4px;">Height: 165 cm &nbsp;·&nbsp; Age: 29 &nbsp;·&nbsp; Male</div>
+      <span class="bca-pill p-under" style="margin-top:8px;">⚠ Below Average — Focus on fat loss + muscle gain</span>
+    </div>
+  </div>
+
+  <!-- Top 4 stats -->
+  <div class="bca-macros">
+    <div class="bca-stat">
+      <span class="bca-stat-val">68.1<span class="bca-stat-unit"> kg</span></span>
+      <div class="bca-stat-label">Weight</div>
+      <span class="bca-pill p-normal">Normal</span>
+    </div>
+    <div class="bca-stat">
+      <span class="bca-stat-val">25.0<span class="bca-stat-unit"> BMI</span></span>
+      <div class="bca-stat-label">Body Mass Index</div>
+      <span class="bca-pill p-normal">Borderline</span>
+    </div>
+    <div class="bca-stat">
+      <span class="bca-stat-val" style="color:#ff5050;">32.7<span class="bca-stat-unit">%</span></span>
+      <div class="bca-stat-label">Body Fat %</div>
+      <span class="bca-pill p-over">HIGH</span>
+    </div>
+    <div class="bca-stat">
+      <span class="bca-stat-val">25.5<span class="bca-stat-unit"> kg</span></span>
+      <div class="bca-stat-label">Muscle Mass</div>
+      <span class="bca-pill p-under">Under</span>
+    </div>
+  </div>
+
+  <!-- Body Composition -->
+  <div class="bca-section-label">Body Composition Analysis</div>
+  <div class="bca-comp-row">
+    <div class="bca-icon" style="background:rgba(0,229,255,.1);">💧</div>
+    <div style="flex:1;">
+      <div class="bca-comp-name">Total Body Water</div>
+      <div class="bca-comp-sub">Normal: 33.7 – 41.2 L</div>
+      <div class="bca-bar-row"><div class="bca-bar-track"><div class="bca-bar-fill" style="width:46%;background:rgba(0,229,255,.7);"></div></div></div>
+    </div>
+    <div style="text-align:right;"><div class="bca-comp-val">33.6 <span style="font-size:11px;color:var(--muted);">L</span></div><span class="bca-pill p-under">Low</span></div>
+  </div>
+  <div class="bca-comp-row">
+    <div class="bca-icon" style="background:rgba(108,80,255,.1);">🥩</div>
+    <div style="flex:1;">
+      <div class="bca-comp-name">Protein</div>
+      <div class="bca-comp-sub">Normal: 9.0 – 11.0 kg</div>
+      <div class="bca-bar-row"><div class="bca-bar-track"><div class="bca-bar-fill" style="width:52%;background:rgba(0,229,255,.7);"></div></div></div>
+    </div>
+    <div style="text-align:right;"><div class="bca-comp-val">9.1 <span style="font-size:11px;color:var(--muted);">kg</span></div><span class="bca-pill p-normal">Normal</span></div>
+  </div>
+  <div class="bca-comp-row">
+    <div class="bca-icon" style="background:rgba(255,200,0,.1);">🦴</div>
+    <div style="flex:1;">
+      <div class="bca-comp-name">Minerals</div>
+      <div class="bca-comp-sub">Normal: 3.12 – 3.81 kg</div>
+      <div class="bca-bar-row"><div class="bca-bar-track"><div class="bca-bar-fill" style="width:40%;background:rgba(255,200,0,.7);"></div></div></div>
+    </div>
+    <div style="text-align:right;"><div class="bca-comp-val">3.07 <span style="font-size:11px;color:var(--muted);">kg</span></div><span class="bca-pill p-under">Low</span></div>
+  </div>
+  <div class="bca-comp-row">
+    <div class="bca-icon" style="background:rgba(255,80,80,.1);">🫧</div>
+    <div style="flex:1;">
+      <div class="bca-comp-name">Body Fat Mass</div>
+      <div class="bca-comp-sub">Normal: 7.2 – 14.4 kg</div>
+      <div class="bca-bar-row"><div class="bca-bar-track"><div class="bca-bar-fill" style="width:88%;background:#ff5050;"></div></div></div>
+    </div>
+    <div style="text-align:right;"><div class="bca-comp-val" style="color:#ff5050;">22.3 <span style="font-size:11px;color:var(--muted);">kg</span></div><span class="bca-pill p-over">HIGH</span></div>
+  </div>
+
+  <!-- Research Params -->
+  <div class="bca-section-label">Research Parameters</div>
+  <div class="bca-2col">
+    <div class="bca-mini">
+      <div class="bca-mini-label">Fat Free Mass</div>
+      <div class="bca-mini-val">45.8 <span style="font-size:12px;color:var(--muted);">kg</span></div>
+      <div class="bca-comp-sub" style="margin-top:3px;">Normal: 43.7–54.5 kg</div>
+      <span class="bca-pill p-normal" style="margin-top:6px;">Normal</span>
+    </div>
+    <div class="bca-mini">
+      <div class="bca-mini-label">Basal Metabolic Rate</div>
+      <div class="bca-mini-val" style="color:#FFD600;">1359 <span style="font-size:12px;color:var(--muted);">kcal</span></div>
+      <div class="bca-comp-sub" style="margin-top:3px;">Normal: 1495–1745 kcal</div>
+      <span class="bca-pill p-under" style="margin-top:6px;">Low</span>
+    </div>
+    <div class="bca-mini">
+      <div class="bca-mini-label">Waist-Hip Ratio</div>
+      <div class="bca-mini-val" style="color:#ff5050;">1.00</div>
+      <div class="bca-comp-sub" style="margin-top:3px;">Normal: 0.80–0.90</div>
+      <span class="bca-pill p-over" style="margin-top:6px;">High</span>
+    </div>
+    <div class="bca-mini">
+      <div class="bca-mini-label">Visceral Fat Level</div>
+      <div class="bca-mini-val" style="color:#FFD600;">9</div>
+      <div class="bca-comp-sub" style="margin-top:3px;">Normal: 1–9</div>
+      <span class="bca-pill p-under" style="margin-top:6px;">Upper Limit</span>
+    </div>
+  </div>
+
+  <!-- Weight Control -->
+  <div class="bca-section-label">Weight Control Goals → Target: 59.9 kg</div>
+  <div class="wc-grid" style="margin-bottom:20px;">
+    <div class="wc-card"><div class="wc-val wc-neg">−8.2 kg</div><div class="wc-lbl">Total to Lose</div></div>
+    <div class="wc-card"><div class="wc-val wc-neg">−13.3 kg</div><div class="wc-lbl">Fat to Lose</div></div>
+    <div class="wc-card"><div class="wc-val wc-pos">+5.1 kg</div><div class="wc-lbl">Muscle to Gain</div></div>
+    <div class="wc-card"><div class="wc-val wc-n">59.9 kg</div><div class="wc-lbl">Target Weight</div></div>
+  </div>
+
+  <!-- Segmental -->
+  <div class="bca-section-label">Segmental Analysis</div>
+  <div class="seg-grid">
+    <div class="seg-card">
+      <div class="seg-title">💪 Lean Mass by Segment</div>
+      <div class="seg-item"><span class="seg-part">Right Arm</span><span class="seg-data" style="color:#00E5FF;">2.67 kg · 90.6% <span class="bca-pill p-normal" style="font-size:9px;">Normal</span></span></div>
+      <div class="seg-item"><span class="seg-part">Left Arm</span><span class="seg-data" style="color:#00E5FF;">2.63 kg · 89.0% <span class="bca-pill p-normal" style="font-size:9px;">Normal</span></span></div>
+      <div class="seg-item"><span class="seg-part">Trunk</span><span class="seg-data" style="color:#00E5FF;">22.5 kg · 95.5% <span class="bca-pill p-normal" style="font-size:9px;">Normal</span></span></div>
+      <div class="seg-item"><span class="seg-part">Right Leg</span><span class="seg-data" style="color:#FFD600;">7.11 kg · 86.6% <span class="bca-pill p-under" style="font-size:9px;">Under</span></span></div>
+      <div class="seg-item"><span class="seg-part">Left Leg</span><span class="seg-data" style="color:#FFD600;">7.00 kg · 85.3% <span class="bca-pill p-under" style="font-size:9px;">Under</span></span></div>
+    </div>
+    <div class="seg-card">
+      <div class="seg-title">🫧 Fat Mass by Segment</div>
+      <div class="seg-item"><span class="seg-part">Right Arm</span><span class="seg-data" style="color:#ff5050;">1.5 kg · 34.0% <span class="bca-pill p-over" style="font-size:9px;">Over</span></span></div>
+      <div class="seg-item"><span class="seg-part">Left Arm</span><span class="seg-data" style="color:#ff5050;">1.5 kg · 34.9% <span class="bca-pill p-over" style="font-size:9px;">Over</span></span></div>
+      <div class="seg-item"><span class="seg-part">Trunk</span><span class="seg-data" style="color:#ff5050;">12.2 kg · 33.8% <span class="bca-pill p-over" style="font-size:9px;">Over</span></span></div>
+      <div class="seg-item"><span class="seg-part">Right Leg</span><span class="seg-data" style="color:#ff5050;">3.0 kg · 28.6% <span class="bca-pill p-over" style="font-size:9px;">Over</span></span></div>
+      <div class="seg-item"><span class="seg-part">Left Leg</span><span class="seg-data" style="color:#ff5050;">3.0 kg · 28.7% <span class="bca-pill p-over" style="font-size:9px;">Over</span></span></div>
+    </div>
+  </div>
+
+</div>
+</div><!-- /page-bca -->
+
+<!-- ══════════════════════════ DIET PAGE ══════════════════════════ -->
+<div class="page-section" id="page-diet">
+<div class="diet-wrap">
+
+  <!-- Macros -->
+  <div style="margin-bottom:16px;">
+    <div class="hint-bar">🥗 Indian Veg + Non-Veg Mix · Personalised for Sandeep's InBody goals · Target: −13.3 kg fat, +5.1 kg muscle</div>
+  </div>
+  <div class="diet-macros">
+    <div class="diet-macro"><div class="dm-val">1850<span class="dm-unit"> kcal</span></div><div class="dm-lbl">Calories</div></div>
+    <div class="diet-macro"><div class="dm-val" style="color:#00ff88;">135<span class="dm-unit">g</span></div><div class="dm-lbl">Protein</div></div>
+    <div class="diet-macro"><div class="dm-val" style="color:#FFD600;">200<span class="dm-unit">g</span></div><div class="dm-lbl">Carbs</div></div>
+    <div class="diet-macro"><div class="dm-val" style="color:#ff8080;">55<span class="dm-unit">g</span></div><div class="dm-lbl">Fats</div></div>
+  </div>
+
+  <!-- MEALS -->
+
+  <!-- Early Morning -->
+  <div class="meal-card-d open">
+    <div class="meal-hdr" onclick="toggleDietMeal(this)">
+      <span class="meal-time-d">5:30 AM</span>
+      <span class="meal-name-d">Early Morning Detox</span>
+      <span class="meal-kcal-d">~50 kcal</span>
+      <span class="meal-chev">▼</span>
+    </div>
+    <div class="meal-body-d">
+      <div class="food-grid-d">
+        <div class="food-item-d"><span class="food-emoji-d">🫚</span><div><div class="food-name-d">Warm Water + Lemon</div><div class="food-qty-d">1 glass · 300 ml</div><div class="food-tags-d"><span class="ft ft-v">🟢 Veg</span><span class="ft ft-c">Detox</span></div></div></div>
+        <div class="food-item-d"><span class="food-emoji-d">🌿</span><div><div class="food-name-d">Soaked Methi Seeds</div><div class="food-qty-d">1 tsp soaked overnight</div><div class="food-tags-d"><span class="ft ft-v">🟢 Veg</span><span class="ft ft-f">Fat Control</span></div></div></div>
+        <div class="food-item-d"><span class="food-emoji-d">🧄</span><div><div class="food-name-d">Raw Garlic Cloves</div><div class="food-qty-d">2 cloves</div><div class="food-tags-d"><span class="ft ft-v">🟢 Veg</span><span class="ft ft-c">Metabolism</span></div></div></div>
+      </div>
+      <div class="meal-note-d">💡 Kickstarts digestion, reduces visceral fat (currently at upper limit: 9), preps metabolism.</div>
+    </div>
+  </div>
+
+  <!-- Breakfast -->
+  <div class="meal-card-d">
+    <div class="meal-hdr" onclick="toggleDietMeal(this)">
+      <span class="meal-time-d">7:30 AM</span>
+      <span class="meal-name-d">Power Breakfast</span>
+      <span class="meal-kcal-d">~450 kcal</span>
+      <span class="meal-chev">▼</span>
+    </div>
+    <div class="meal-body-d">
+      <div class="option-label">Option A — Non-Veg Days (Mon/Wed/Fri/Sun)</div>
+      <div class="food-grid-d">
+        <div class="food-item-d"><span class="food-emoji-d">🥚</span><div><div class="food-name-d">Boiled / Scrambled Eggs</div><div class="food-qty-d">3 whole eggs</div><div class="food-tags-d"><span class="ft ft-nv">🔴 Non-Veg</span><span class="ft ft-p">18g P</span></div></div></div>
+        <div class="food-item-d"><span class="food-emoji-d">🫓</span><div><div class="food-name-d">Multigrain Roti</div><div class="food-qty-d">2 rotis</div><div class="food-tags-d"><span class="ft ft-v">🟢 Veg</span><span class="ft ft-c">30g C</span></div></div></div>
+        <div class="food-item-d"><span class="food-emoji-d">🥛</span><div><div class="food-name-d">Low-fat Dahi (Curd)</div><div class="food-qty-d">150g</div><div class="food-tags-d"><span class="ft ft-v">🟢 Veg</span><span class="ft ft-p">8g P</span></div></div></div>
+      </div>
+      <div class="option-label">Option B — Veg Days (Tue/Thu/Sat)</div>
+      <div class="food-grid-d">
+        <div class="food-item-d"><span class="food-emoji-d">🫘</span><div><div class="food-name-d">Moong Dal Chilla</div><div class="food-qty-d">3 medium chillas</div><div class="food-tags-d"><span class="ft ft-v">🟢 Veg</span><span class="ft ft-p">20g P</span></div></div></div>
+        <div class="food-item-d"><span class="food-emoji-d">🧀</span><div><div class="food-name-d">Paneer (cubed)</div><div class="food-qty-d">50g</div><div class="food-tags-d"><span class="ft ft-v">🟢 Veg</span><span class="ft ft-p">8g P</span></div></div></div>
+        <div class="food-item-d"><span class="food-emoji-d">🍵</span><div><div class="food-name-d">Masala Green Tea</div><div class="food-qty-d">1 cup · no sugar</div><div class="food-tags-d"><span class="ft ft-v">🟢 Veg</span><span class="ft ft-c">Fat Burn</span></div></div></div>
+      </div>
+      <div class="meal-note-d">💡 High-protein breakfast keeps appetite controlled all morning. Skip milk tea — it spikes insulin.</div>
+    </div>
+  </div>
+
+  <!-- Mid-Morning -->
+  <div class="meal-card-d">
+    <div class="meal-hdr" onclick="toggleDietMeal(this)">
+      <span class="meal-time-d">10:30 AM</span>
+      <span class="meal-name-d">Mid-Morning Snack</span>
+      <span class="meal-kcal-d">~150 kcal</span>
+      <span class="meal-chev">▼</span>
+    </div>
+    <div class="meal-body-d">
+      <div class="food-grid-d">
+        <div class="food-item-d"><span class="food-emoji-d">🍎</span><div><div class="food-name-d">Seasonal Fruit</div><div class="food-qty-d">1 medium — apple/guava/pear</div><div class="food-tags-d"><span class="ft ft-v">🟢 Veg</span><span class="ft ft-c">20g C</span></div></div></div>
+        <div class="food-item-d"><span class="food-emoji-d">🥜</span><div><div class="food-name-d">Mixed Nuts</div><div class="food-qty-d">10 almonds + 5 walnuts</div><div class="food-tags-d"><span class="ft ft-v">🟢 Veg</span><span class="ft ft-f">8g F</span></div></div></div>
+        <div class="food-item-d"><span class="food-emoji-d">🥛</span><div><div class="food-name-d">Buttermilk (Chaach)</div><div class="food-qty-d">1 glass · jeera + mint</div><div class="food-tags-d"><span class="ft ft-v">🟢 Veg</span><span class="ft ft-p">4g P</span></div></div></div>
+      </div>
+      <div class="meal-note-d">💡 Prevents binge eating at lunch. Chaach is excellent for gut health and hydration (body water is low).</div>
+    </div>
+  </div>
+
+  <!-- Lunch -->
+  <div class="meal-card-d">
+    <div class="meal-hdr" onclick="toggleDietMeal(this)">
+      <span class="meal-time-d">1:00 PM</span>
+      <span class="meal-name-d">Power Lunch</span>
+      <span class="meal-kcal-d">~550 kcal</span>
+      <span class="meal-chev">▼</span>
+    </div>
+    <div class="meal-body-d">
+      <div class="option-label">Non-Veg Days</div>
+      <div class="food-grid-d">
+        <div class="food-item-d"><span class="food-emoji-d">🍗</span><div><div class="food-name-d">Grilled/Tandoori Chicken</div><div class="food-qty-d">150g · no skin</div><div class="food-tags-d"><span class="ft ft-nv">🔴 Non-Veg</span><span class="ft ft-p">38g P</span></div></div></div>
+        <div class="food-item-d"><span class="food-emoji-d">🍚</span><div><div class="food-name-d">Brown Rice / 2 Rotis</div><div class="food-qty-d">1 small katori or 2 chapatis</div><div class="food-tags-d"><span class="ft ft-v">🟢 Veg</span><span class="ft ft-c">40g C</span></div></div></div>
+        <div class="food-item-d"><span class="food-emoji-d">🫑</span><div><div class="food-name-d">Mixed Sabzi (low oil)</div><div class="food-qty-d">1 katori — gobi/beans/bhindi</div><div class="food-tags-d"><span class="ft ft-v">🟢 Veg</span><span class="ft ft-c">10g C</span></div></div></div>
+        <div class="food-item-d"><span class="food-emoji-d">🥗</span><div><div class="food-name-d">Kachumber Salad</div><div class="food-qty-d">1 plate — eat FIRST before meal</div><div class="food-tags-d"><span class="ft ft-v">🟢 Veg</span><span class="ft ft-c">5g C</span></div></div></div>
+      </div>
+      <div class="option-label">Veg Days</div>
+      <div class="food-grid-d">
+        <div class="food-item-d"><span class="food-emoji-d">🫘</span><div><div class="food-name-d">Dal (Masoor/Chana/Toor)</div><div class="food-qty-d">1.5 katori</div><div class="food-tags-d"><span class="ft ft-v">🟢 Veg</span><span class="ft ft-p">18g P</span></div></div></div>
+        <div class="food-item-d"><span class="food-emoji-d">🧀</span><div><div class="food-name-d">Paneer Bhurji (low oil)</div><div class="food-qty-d">80g paneer</div><div class="food-tags-d"><span class="ft ft-v">🟢 Veg</span><span class="ft ft-p">16g P</span></div></div></div>
+        <div class="food-item-d"><span class="food-emoji-d">🫓</span><div><div class="food-name-d">Jowar / Bajra Roti</div><div class="food-qty-d">2 rotis</div><div class="food-tags-d"><span class="ft ft-v">🟢 Veg</span><span class="ft ft-c">30g C</span></div></div></div>
+      </div>
+      <div class="meal-note-d">💡 Always eat salad FIRST — slows glucose absorption. Salad before meal = less fat storage.</div>
+    </div>
+  </div>
+
+  <!-- Pre-Workout -->
+  <div class="meal-card-d">
+    <div class="meal-hdr" onclick="toggleDietMeal(this)">
+      <span class="meal-time-d">4:00 PM</span>
+      <span class="meal-name-d">Pre + Post Workout</span>
+      <span class="meal-kcal-d">~350 kcal</span>
+      <span class="meal-chev">▼</span>
+    </div>
+    <div class="meal-body-d">
+      <div class="option-label">Pre-Workout (before gym)</div>
+      <div class="food-grid-d">
+        <div class="food-item-d"><span class="food-emoji-d">🍌</span><div><div class="food-name-d">Banana</div><div class="food-qty-d">1 medium</div><div class="food-tags-d"><span class="ft ft-v">🟢 Veg</span><span class="ft ft-c">25g C</span></div></div></div>
+        <div class="food-item-d"><span class="food-emoji-d">🥛</span><div><div class="food-name-d">Sattu Drink</div><div class="food-qty-d">2 tbsp sattu + water + lemon</div><div class="food-tags-d"><span class="ft ft-v">🟢 Veg</span><span class="ft ft-p">10g P</span></div></div></div>
+      </div>
+      <div class="option-label">Post-Workout (30 min after)</div>
+      <div class="food-grid-d">
+        <div class="food-item-d"><span class="food-emoji-d">🥛</span><div><div class="food-name-d">Low-fat Milk / Dahi</div><div class="food-qty-d">250 ml milk or 150g dahi</div><div class="food-tags-d"><span class="ft ft-v">🟢 Veg</span><span class="ft ft-p">8g P</span></div></div></div>
+        <div class="food-item-d"><span class="food-emoji-d">🍳</span><div><div class="food-name-d">Boiled Egg Whites</div><div class="food-qty-d">3 whites (non-veg days)</div><div class="food-tags-d"><span class="ft ft-nv">🔴 Non-Veg</span><span class="ft ft-p">11g P</span></div></div></div>
+      </div>
+      <div class="meal-note-d">💡 Sattu = India's natural pre-workout. High protein, low GI. Better than expensive protein bars.</div>
+    </div>
+  </div>
+
+  <!-- Dinner -->
+  <div class="meal-card-d">
+    <div class="meal-hdr" onclick="toggleDietMeal(this)">
+      <span class="meal-time-d">7:30 PM</span>
+      <span class="meal-name-d">Light Dinner</span>
+      <span class="meal-kcal-d">~450 kcal</span>
+      <span class="meal-chev">▼</span>
+    </div>
+    <div class="meal-body-d">
+      <div class="option-label">Non-Veg</div>
+      <div class="food-grid-d">
+        <div class="food-item-d"><span class="food-emoji-d">🐟</span><div><div class="food-name-d">Grilled Fish / Egg Curry</div><div class="food-qty-d">120g fish or 2 whole eggs</div><div class="food-tags-d"><span class="ft ft-nv">🔴 Non-Veg</span><span class="ft ft-p">30g P</span></div></div></div>
+        <div class="food-item-d"><span class="food-emoji-d">🥬</span><div><div class="food-name-d">Stir-fried Vegetables</div><div class="food-qty-d">2 katori — palak/broccoli/beans</div><div class="food-tags-d"><span class="ft ft-v">🟢 Veg</span><span class="ft ft-c">Fibre</span></div></div></div>
+        <div class="food-item-d"><span class="food-emoji-d">🫓</span><div><div class="food-name-d">1 Roti only</div><div class="food-qty-d">Skip rice at night</div><div class="food-tags-d"><span class="ft ft-v">🟢 Veg</span><span class="ft ft-c">15g C</span></div></div></div>
+      </div>
+      <div class="option-label">Veg</div>
+      <div class="food-grid-d">
+        <div class="food-item-d"><span class="food-emoji-d">🍲</span><div><div class="food-name-d">Palak Paneer / Dal Tadka</div><div class="food-qty-d">1 katori each</div><div class="food-tags-d"><span class="ft ft-v">🟢 Veg</span><span class="ft ft-p">22g P</span></div></div></div>
+        <div class="food-item-d"><span class="food-emoji-d">🌱</span><div><div class="food-name-d">Sprouts Salad</div><div class="food-qty-d">1 katori moong/chana sprouts</div><div class="food-tags-d"><span class="ft ft-v">🟢 Veg</span><span class="ft ft-p">8g P</span></div></div></div>
+      </div>
+      <div class="meal-note-d">💡 Eat by 8 PM. No rice at dinner. Heavy meals at night directly increase body fat.</div>
+    </div>
+  </div>
+
+  <!-- Bedtime -->
+  <div class="meal-card-d">
+    <div class="meal-hdr" onclick="toggleDietMeal(this)">
+      <span class="meal-time-d">10:00 PM</span>
+      <span class="meal-name-d">Bedtime Drink</span>
+      <span class="meal-kcal-d">~80 kcal</span>
+      <span class="meal-chev">▼</span>
+    </div>
+    <div class="meal-body-d">
+      <div class="food-grid-d">
+        <div class="food-item-d"><span class="food-emoji-d">🥛</span><div><div class="food-name-d">Haldi Doodh</div><div class="food-qty-d">200 ml warm low-fat milk + haldi</div><div class="food-tags-d"><span class="ft ft-v">🟢 Veg</span><span class="ft ft-p">7g P</span><span class="ft ft-c">Anti-inflam</span></div></div></div>
+        <div class="food-item-d"><span class="food-emoji-d">🌿</span><div><div class="food-name-d">Ashwagandha (optional)</div><div class="food-qty-d">½ tsp in milk</div><div class="food-tags-d"><span class="ft ft-v">🟢 Veg</span><span class="ft ft-c">Recovery</span></div></div></div>
+      </div>
+      <div class="meal-note-d">💡 Milk casein protein feeds muscles overnight. Haldi reduces workout inflammation. Sleep 7–8 hrs for fat loss hormones.</div>
+    </div>
+  </div>
+
+  <!-- Weekly rotation -->
+  <div class="bca-section-label" style="margin-top:22px;">Weekly Protein Rotation</div>
+  <div class="week-row-d">
+    <div class="day-pill-d day-nv"><strong>MON</strong>🍗 Chicken</div>
+    <div class="day-pill-d day-v"><strong>TUE</strong>🫘 Dal+Paneer</div>
+    <div class="day-pill-d day-nv"><strong>WED</strong>🥚 Eggs</div>
+    <div class="day-pill-d day-v"><strong>THU</strong>🌱 Sprouts</div>
+    <div class="day-pill-d day-nv"><strong>FRI</strong>🐟 Fish</div>
+    <div class="day-pill-d day-v"><strong>SAT</strong>🧀 Paneer</div>
+    <div class="day-pill-d day-nv"><strong>SUN</strong>🍗 Chicken</div>
+  </div>
+
+  <!-- Tips -->
+  <div class="bca-section-label">Key Rules</div>
+  <div class="tip-grid">
+    <div class="tip-d"><div class="tip-icon-d">💧</div><div class="tip-title-d">Hydration</div><div class="tip-text-d">3.5 L water/day. Body water (33.6L) is low. Start every meal with a glass.</div></div>
+    <div class="tip-d"><div class="tip-icon-d">🚫</div><div class="tip-title-d">Avoid</div><div class="tip-text-d">No maida, fried food, packaged namkeen, sugary chai, white rice at night, alcohol.</div></div>
+    <div class="tip-d"><div class="tip-icon-d">🧂</div><div class="tip-title-d">Cook Smart</div><div class="tip-text-d">Use mustard oil/ghee (½ tsp). Prefer grilling, boiling, steaming over frying.</div></div>
+    <div class="tip-d"><div class="tip-icon-d">⏰</div><div class="tip-title-d">Meal Timing</div><div class="tip-text-d">Never skip breakfast. Max gap 3–4 hours. Last meal by 8 PM sharp.</div></div>
+    <div class="tip-d"><div class="tip-icon-d">🦵</div><div class="tip-title-d">Leg Priority</div><div class="tip-text-d">Legs are Under in lean mass. Squats + lunges 2–3x/week to add the +5.1 kg muscle.</div></div>
+    <div class="tip-d"><div class="tip-icon-d">🍚</div><div class="tip-title-d">Smart Carbs</div><div class="tip-text-d">Most carbs in morning and pre-workout. Switch white rice → brown rice / jowar roti.</div></div>
+  </div>
+
+  <!-- Takeaways -->
+  <div class="bca-section-label">Key Takeaways</div>
+  <div class="takeaway-grid">
+    <div class="tw-card" style="border-color:rgba(255,80,80,.25);"><div class="tw-badge" style="color:#ff5050;">❗ HIGH PRIORITY</div><div class="tw-text">Body fat 22.3 kg (32.7%) — nearly double healthy range. Fat loss is goal #1.</div></div>
+    <div class="tw-card" style="border-color:rgba(255,200,0,.25);"><div class="tw-badge" style="color:#FFD600;">⚠ MUSCLE</div><div class="tw-text">SMM 25.5 kg is below normal (28.7–35.1 kg). Add +5.1 kg especially in legs.</div></div>
+    <div class="tw-card" style="border-color:rgba(0,229,255,.25);"><div class="tw-badge" style="color:#00E5FF;">✅ GOOD</div><div class="tw-text">Protein intake adequate. Trunk lean mass 95.5%. Weight still within range.</div></div>
+    <div class="tw-card" style="border-color:rgba(0,200,80,.25);"><div class="tw-badge" style="color:#00c850;">💡 ACTION</div><div class="tw-text">Cardio + Strength combo. Lose 13.3 kg fat, gain 5.1 kg muscle. Stay hydrated.</div></div>
+  </div>
+
+</div>
+</div><!-- /page-diet -->
+
+<!-- ══════════════════════════ SUGGESTED PLAN PAGE ══════════════════════════ -->
+<div class="page-section" id="page-ai">
+<div class="ai-wrap">
+
+  <!-- Hero Banner -->
+  <div class="ai-hero">
+    <div class="ai-hero-icon">⚡</div>
+    <div>
+      <div class="ai-hero-title">Suggested Workout Plan</div>
+      <div class="ai-hero-sub">Personalised 6-day training plan designed specifically based on Sandeep's InBody results. Targets high body fat (32.7%), under-developed legs, low muscle mass and low BMR.</div>
+      <div class="ai-context-chips">
+        <span class="ai-chip">FAT LOSS PRIORITY</span>
+        <span class="ai-chip">LEGS UNDER ↑</span>
+        <span class="ai-chip">+5.1KG MUSCLE TARGET</span>
+        <span class="ai-chip">VISCERAL FAT ↓</span>
+        <span class="ai-chip">BMR BOOST</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Why this plan -->
+  <div class="bca-section-label">Why This Plan Is Different From Your Current One</div>
+  <div class="takeaway-grid" style="margin-bottom:24px;">
+    <div class="tw-card" style="border-color:rgba(255,80,80,.25);">
+      <div class="tw-badge" style="color:#ff5050;">❗ PROBLEM</div>
+      <div class="tw-text">Your current plan has only 1 leg day. But your legs are UNDER in lean mass (85–87%). This plan adds a 2nd leg day and makes it a priority.</div>
+    </div>
+    <div class="tw-card" style="border-color:rgba(255,200,0,.25);">
+      <div class="tw-badge" style="color:#FFD600;">🔥 CARDIO</div>
+      <div class="tw-text">Visceral fat at level 9 needs HIIT cardio added to every session as a finisher — not just Saturday. 10–15 min per day is enough.</div>
+    </div>
+    <div class="tw-card" style="border-color:rgba(0,229,255,.25);">
+      <div class="tw-badge" style="color:#00E5FF;">💪 VOLUME</div>
+      <div class="tw-text">Slightly higher rep ranges (12–15) for fat loss + muscle endurance. Lower rest periods (60 sec) to keep heart rate up and burn more calories.</div>
+    </div>
+    <div class="tw-card" style="border-color:rgba(167,139,250,.25);">
+      <div class="tw-badge" style="color:#a78bfa;">📈 PROGRESSION</div>
+      <div class="tw-text">Each week, add 2.5 kg to compound lifts. This progressive overload directly raises your BMR (currently low at 1359 kcal) as you build muscle.</div>
+    </div>
+  </div>
+
+  <!-- Day Tabs for suggested plan -->
+  <div class="ai-day-tabs" id="sug-day-tabs">
+    <button class="ai-day-btn active" onclick="switchSugDay(0,this)">MON · Chest+Shoulders</button>
+    <button class="ai-day-btn" onclick="switchSugDay(1,this)">TUE · Back+Biceps</button>
+    <button class="ai-day-btn" onclick="switchSugDay(2,this)">WED · LEGS 🔥</button>
+    <button class="ai-day-btn" onclick="switchSugDay(3,this)">THU · Push+Core</button>
+    <button class="ai-day-btn" onclick="switchSugDay(4,this)">FRI · Pull+Legs 2</button>
+    <button class="ai-day-btn" onclick="switchSugDay(5,this)">SAT · HIIT+Cardio</button>
+  </div>
+
+  <!-- Day Panels -->
+
+  <!-- DAY 1 -->
+  <div class="sug-panel active" id="sug-0">
+    <div class="ai-workout-day-title">Day 1 — Chest &amp; Shoulders · Fat-Burn Focus</div>
+    <div class="hint-bar">🎯 Rest only 60 sec between sets. Superset marked pairs to keep heart rate elevated.</div>
+    <div class="ai-ex-list">
+
+      <div class="ai-ex-item">
+        <div class="ai-ex-num">01</div>
+        <div style="flex:1;">
+          <div class="ai-ex-name">Flat Barbell Bench Press</div>
+          <div class="ai-ex-detail">Primary chest compound — builds pec mass and burns high calories</div>
+          <div class="ai-ex-why">💡 Your trunk has 12.2 kg fat — heavy pressing builds muscle underneath and elevates metabolism</div>
+          <div class="ai-ex-tags"><span class="ai-ex-tag ai-tag-sets">4 Sets</span><span class="ai-ex-tag ai-tag-reps">12 Reps</span><span class="ai-ex-tag ai-tag-focus">Chest · Triceps</span></div>
+        </div>
+      </div>
+
+      <div class="ai-ex-item">
+        <div class="ai-ex-num">02</div>
+        <div style="flex:1;">
+          <div class="ai-ex-name">Incline Dumbbell Press <span style="font-size:10px;color:#FFD600;">SUPERSET ↓</span></div>
+          <div class="ai-ex-detail">Upper chest development — fill out the upper pec shelf</div>
+          <div class="ai-ex-why">💡 Upper chest is often underdeveloped — incline angle targets clavicular head</div>
+          <div class="ai-ex-tags"><span class="ai-ex-tag ai-tag-sets">3 Sets</span><span class="ai-ex-tag ai-tag-reps">12–15 Reps</span><span class="ai-ex-tag ai-tag-focus">Upper Chest</span></div>
+        </div>
+      </div>
+
+      <div class="ai-ex-item">
+        <div class="ai-ex-num">02B</div>
+        <div style="flex:1;">
+          <div class="ai-ex-name">Push-Ups to Failure <span style="font-size:10px;color:#FFD600;">SUPERSET ↑</span></div>
+          <div class="ai-ex-detail">Superset with incline press — zero rest between these two</div>
+          <div class="ai-ex-why">💡 Burns extra calories, keeps chest under tension longer — critical for fat loss</div>
+          <div class="ai-ex-tags"><span class="ai-ex-tag ai-tag-sets">3 Sets</span><span class="ai-ex-tag ai-tag-reps">To Failure</span><span class="ai-ex-tag ai-tag-focus">Chest · Core</span></div>
+        </div>
+      </div>
+
+      <div class="ai-ex-item">
+        <div class="ai-ex-num">03</div>
+        <div style="flex:1;">
+          <div class="ai-ex-name">Cable Chest Fly (Mid)</div>
+          <div class="ai-ex-detail">Constant tension on pecs — isolation for shape and definition</div>
+          <div class="ai-ex-why">💡 Cable keeps tension at peak contraction unlike dumbbells — more fat-burning stimulus</div>
+          <div class="ai-ex-tags"><span class="ai-ex-tag ai-tag-sets">3 Sets</span><span class="ai-ex-tag ai-tag-reps">15 Reps</span><span class="ai-ex-tag ai-tag-focus">Chest · Definition</span></div>
+        </div>
+      </div>
+
+      <div class="ai-ex-item">
+        <div class="ai-ex-num">04</div>
+        <div style="flex:1;">
+          <div class="ai-ex-name">Overhead Dumbbell Press</div>
+          <div class="ai-ex-detail">Seated or standing — builds shoulder width and thickness</div>
+          <div class="ai-ex-why">💡 Building shoulder width makes your waist-hip ratio look better — yours is high (1.00)</div>
+          <div class="ai-ex-tags"><span class="ai-ex-tag ai-tag-sets">4 Sets</span><span class="ai-ex-tag ai-tag-reps">12 Reps</span><span class="ai-ex-tag ai-tag-focus">Front+Side Delt</span></div>
+        </div>
+      </div>
+
+      <div class="ai-ex-item">
+        <div class="ai-ex-num">05</div>
+        <div style="flex:1;">
+          <div class="ai-ex-name">Lateral Raises (Cable or DB)</div>
+          <div class="ai-ex-detail">Side deltoid isolation — wider shoulder look</div>
+          <div class="ai-ex-why">💡 Side delts create the V-taper illusion — visually reduces the waist. Your WHR is 1.00 (high)</div>
+          <div class="ai-ex-tags"><span class="ai-ex-tag ai-tag-sets">4 Sets</span><span class="ai-ex-tag ai-tag-reps">15–20 Reps</span><span class="ai-ex-tag ai-tag-focus">Side Delt</span></div>
+        </div>
+      </div>
+
+      <div class="ai-ex-item">
+        <div class="ai-ex-num">06</div>
+        <div style="flex:1;">
+          <div class="ai-ex-name">Face Pull — Rope Cable</div>
+          <div class="ai-ex-detail">Rear delt + rotator cuff health — prevents shoulder injury</div>
+          <div class="ai-ex-why">💡 Essential for shoulder balance — prevents injury from all that pressing. Non-negotiable.</div>
+          <div class="ai-ex-tags"><span class="ai-ex-tag ai-tag-sets">3 Sets</span><span class="ai-ex-tag ai-tag-reps">20 Reps</span><span class="ai-ex-tag ai-tag-focus">Rear Delt · Health</span></div>
+        </div>
+      </div>
+
+      <div class="ai-ex-item" style="border-color:rgba(255,107,0,.3);background:rgba(255,107,0,.05);">
+        <div class="ai-ex-num">🔥</div>
+        <div style="flex:1;">
+          <div class="ai-ex-name" style="color:#FF6B35;">FINISHER — Treadmill HIIT</div>
+          <div class="ai-ex-detail">10 min: 30 sec sprint (level 10–12) → 30 sec walk. Repeat 10 times.</div>
+          <div class="ai-ex-why">💡 Post-weight HIIT burns fat 3× more effectively — glycogen is depleted so body burns fat directly</div>
+          <div class="ai-ex-tags"><span class="ai-ex-tag" style="background:rgba(255,107,0,.15);color:#FF6B35;border:1px solid rgba(255,107,0,.3);">10 Min</span><span class="ai-ex-tag" style="background:rgba(255,107,0,.15);color:#FF6B35;border:1px solid rgba(255,107,0,.3);">~120 kcal</span></div>
+        </div>
+      </div>
+
+    </div>
+    <div class="hint-bar" style="margin-top:14px;background:rgba(0,229,255,.04);">⏱ Est. Duration: 70–80 min &nbsp;·&nbsp; 🔥 Est. Calories: ~380–420 kcal &nbsp;·&nbsp; 💧 Drink 600 ml water during session</div>
+  </div>
+
+  <!-- DAY 2 -->
+  <div class="sug-panel" id="sug-1">
+    <div class="ai-workout-day-title">Day 2 — Back &amp; Biceps · Width + Thickness</div>
+    <div class="hint-bar">🎯 Focus on full range of motion. Squeeze the lat at the bottom of every pull. 60 sec rest.</div>
+    <div class="ai-ex-list">
+
+      <div class="ai-ex-item">
+        <div class="ai-ex-num">01</div>
+        <div style="flex:1;">
+          <div class="ai-ex-name">Wide-Grip Lat Pulldown</div>
+          <div class="ai-ex-detail">Primary lat width builder — creates the V-shape</div>
+          <div class="ai-ex-why">💡 Wide lats visually narrow your waist. Your waist-hip ratio is 1.00 — wide back helps aesthetically</div>
+          <div class="ai-ex-tags"><span class="ai-ex-tag ai-tag-sets">4 Sets</span><span class="ai-ex-tag ai-tag-reps">12 Reps</span><span class="ai-ex-tag ai-tag-focus">Lats · Width</span></div>
+        </div>
+      </div>
+
+      <div class="ai-ex-item">
+        <div class="ai-ex-num">02</div>
+        <div style="flex:1;">
+          <div class="ai-ex-name">Bent-Over Barbell Row</div>
+          <div class="ai-ex-detail">King of back exercises — mid-back thickness and strength</div>
+          <div class="ai-ex-why">💡 Compound movement burns the most calories of any back exercise — perfect for your fat loss goal</div>
+          <div class="ai-ex-tags"><span class="ai-ex-tag ai-tag-sets">4 Sets</span><span class="ai-ex-tag ai-tag-reps">10–12 Reps</span><span class="ai-ex-tag ai-tag-focus">Full Back</span></div>
+        </div>
+      </div>
+
+      <div class="ai-ex-item">
+        <div class="ai-ex-num">03</div>
+        <div style="flex:1;">
+          <div class="ai-ex-name">Seated Cable Row (Close Grip)</div>
+          <div class="ai-ex-detail">Mid-back density and rhomboid development</div>
+          <div class="ai-ex-why">💡 Builds the inner back thickness — improves posture, which matters when you have excess trunk fat</div>
+          <div class="ai-ex-tags"><span class="ai-ex-tag ai-tag-sets">3 Sets</span><span class="ai-ex-tag ai-tag-reps">12–15 Reps</span><span class="ai-ex-tag ai-tag-focus">Mid Back · Rhomboids</span></div>
+        </div>
+      </div>
+
+      <div class="ai-ex-item">
+        <div class="ai-ex-num">04</div>
+        <div style="flex:1;">
+          <div class="ai-ex-name">Single-Arm Dumbbell Row</div>
+          <div class="ai-ex-detail">Unilateral — fixes left/right imbalances</div>
+          <div class="ai-ex-why">💡 Your left arm lean mass (2.63 kg) vs right (2.67 kg) shows slight imbalance — unilateral work fixes this</div>
+          <div class="ai-ex-tags"><span class="ai-ex-tag ai-tag-sets">3 Sets</span><span class="ai-ex-tag ai-tag-reps">12 Reps each</span><span class="ai-ex-tag ai-tag-focus">Lats · Balance</span></div>
+        </div>
+      </div>
+
+      <div class="ai-ex-item">
+        <div class="ai-ex-num">05</div>
+        <div style="flex:1;">
+          <div class="ai-ex-name">EZ Bar Bicep Curl</div>
+          <div class="ai-ex-detail">Primary bicep mass builder — less wrist strain than straight bar</div>
+          <div class="ai-ex-why">💡 EZ bar reduces wrist supination strain, safer for long-term training consistency</div>
+          <div class="ai-ex-tags"><span class="ai-ex-tag ai-tag-sets">3 Sets</span><span class="ai-ex-tag ai-tag-reps">12 Reps</span><span class="ai-ex-tag ai-tag-focus">Biceps · Peak</span></div>
+        </div>
+      </div>
+
+      <div class="ai-ex-item">
+        <div class="ai-ex-num">06</div>
+        <div style="flex:1;">
+          <div class="ai-ex-name">Hammer Curls + Incline DB Curl <span style="font-size:10px;color:#FFD600;">SUPERSET</span></div>
+          <div class="ai-ex-detail">Brachialis + long head bicep — complete arm development</div>
+          <div class="ai-ex-why">💡 Hammer builds forearm thickness. Incline curl stretches long head fully. Together = complete bicep</div>
+          <div class="ai-ex-tags"><span class="ai-ex-tag ai-tag-sets">3 Sets</span><span class="ai-ex-tag ai-tag-reps">10+10 Reps</span><span class="ai-ex-tag ai-tag-focus">Biceps · Forearms</span></div>
+        </div>
+      </div>
+
+      <div class="ai-ex-item" style="border-color:rgba(255,107,0,.3);background:rgba(255,107,0,.05);">
+        <div class="ai-ex-num">🔥</div>
+        <div style="flex:1;">
+          <div class="ai-ex-name" style="color:#FF6B35;">FINISHER — Rowing Machine</div>
+          <div class="ai-ex-detail">10 min continuous rowing at moderate-high intensity. Perfect after back day.</div>
+          <div class="ai-ex-why">💡 Rowing uses the same muscles just trained — flush them with blood, accelerate fat burn and recovery</div>
+          <div class="ai-ex-tags"><span class="ai-ex-tag" style="background:rgba(255,107,0,.15);color:#FF6B35;border:1px solid rgba(255,107,0,.3);">10 Min</span><span class="ai-ex-tag" style="background:rgba(255,107,0,.15);color:#FF6B35;border:1px solid rgba(255,107,0,.3);">~110 kcal</span></div>
+        </div>
+      </div>
+
+    </div>
+    <div class="hint-bar" style="margin-top:14px;background:rgba(0,229,255,.04);">⏱ Est. Duration: 65–75 min &nbsp;·&nbsp; 🔥 Est. Calories: ~340–380 kcal &nbsp;·&nbsp; 💧 600 ml water</div>
+  </div>
+
+  <!-- DAY 3 -->
+  <div class="sug-panel" id="sug-2">
+    <div class="ai-workout-day-title" style="border-left-color:#ff5050;color:#ff5050;">Day 3 — LEGS 🔥 (Priority Day — Biggest Weakness)</div>
+    <div class="hint-bar" style="background:rgba(255,80,80,.06);border-color:rgba(255,80,80,.2);color:#ff8080;">⚠ Your legs are UNDER in lean mass (85–86%). This is the most important session of the week. Do NOT skip it.</div>
+    <div class="ai-ex-list">
+
+      <div class="ai-ex-item">
+        <div class="ai-ex-num">00</div>
+        <div style="flex:1;">
+          <div class="ai-ex-name">Warm-Up: Leg Press (Light)</div>
+          <div class="ai-ex-detail">50% of working weight — 2 sets of 20 reps to warm up knee joints</div>
+          <div class="ai-ex-why">💡 Cold knees are injury risk with heavy squats. 5 min bike + 2 warm-up sets is mandatory</div>
+          <div class="ai-ex-tags"><span class="ai-ex-tag ai-tag-sets">2 Sets</span><span class="ai-ex-tag ai-tag-reps">20 Reps Light</span><span class="ai-ex-tag ai-tag-focus">Warm-Up</span></div>
+        </div>
+      </div>
+
+      <div class="ai-ex-item" style="border-color:rgba(255,80,80,.3);">
+        <div class="ai-ex-num">01</div>
+        <div style="flex:1;">
+          <div class="ai-ex-name">Barbell Back Squat 👑</div>
+          <div class="ai-ex-detail">The king — highest muscle recruitment of any lower body exercise</div>
+          <div class="ai-ex-why">💡 Squats release testosterone and growth hormone — builds leg AND overall body mass. Burns ~250 kcal alone</div>
+          <div class="ai-ex-tags"><span class="ai-ex-tag ai-tag-sets">4 Sets</span><span class="ai-ex-tag ai-tag-reps">10–12 Reps</span><span class="ai-ex-tag ai-tag-focus">Quads · Glutes · Hams</span></div>
+        </div>
+      </div>
+
+      <div class="ai-ex-item">
+        <div class="ai-ex-num">02</div>
+        <div style="flex:1;">
+          <div class="ai-ex-name">Romanian Deadlift (RDL)</div>
+          <div class="ai-ex-detail">Hamstring + glute dominant — posterior chain development</div>
+          <div class="ai-ex-why">💡 Your hamstrings are weak — RDL specifically targets them. Also builds lower back strength for deadlifts</div>
+          <div class="ai-ex-tags"><span class="ai-ex-tag ai-tag-sets">4 Sets</span><span class="ai-ex-tag ai-tag-reps">10–12 Reps</span><span class="ai-ex-tag ai-tag-focus">Hamstrings · Glutes</span></div>
+        </div>
+      </div>
+
+      <div class="ai-ex-item">
+        <div class="ai-ex-num">03</div>
+        <div style="flex:1;">
+          <div class="ai-ex-name">Leg Press (Heavy) — Wide Stance</div>
+          <div class="ai-ex-detail">After squats — push more volume safely. Wide stance = more glute involvement</div>
+          <div class="ai-ex-why">💡 Allows heavier loading after squat fatigue. More volume = more muscle growth signal for under-developed legs</div>
+          <div class="ai-ex-tags"><span class="ai-ex-tag ai-tag-sets">4 Sets</span><span class="ai-ex-tag ai-tag-reps">12–15 Reps</span><span class="ai-ex-tag ai-tag-focus">Quads · Glutes</span></div>
+        </div>
+      </div>
+
+      <div class="ai-ex-item">
+        <div class="ai-ex-num">04</div>
+        <div style="flex:1;">
+          <div class="ai-ex-name">Dumbbell Walking Lunges</div>
+          <div class="ai-ex-detail">Unilateral — fixes left/right leg imbalance, improves balance</div>
+          <div class="ai-ex-why">💡 Your left leg (7.00 kg) vs right (7.11 kg) shows slight imbalance. Lunges fix this. Also burns huge calories</div>
+          <div class="ai-ex-tags"><span class="ai-ex-tag ai-tag-sets">3 Sets</span><span class="ai-ex-tag ai-tag-reps">12 each leg</span><span class="ai-ex-tag ai-tag-focus">Quads · Balance</span></div>
+        </div>
+      </div>
+
+      <div class="ai-ex-item">
+        <div class="ai-ex-num">05</div>
+        <div style="flex:1;">
+          <div class="ai-ex-name">Lying Leg Curl Machine</div>
+          <div class="ai-ex-detail">Hamstring isolation — specifically targets the under-developed area</div>
+          <div class="ai-ex-why">💡 Compound lifts don't fully isolate hams — add this to ensure complete hamstring development</div>
+          <div class="ai-ex-tags"><span class="ai-ex-tag ai-tag-sets">3 Sets</span><span class="ai-ex-tag ai-tag-reps">15 Reps</span><span class="ai-ex-tag ai-tag-focus">Hamstrings</span></div>
+        </div>
+      </div>
+
+      <div class="ai-ex-item">
+        <div class="ai-ex-num">06</div>
+        <div style="flex:1;">
+          <div class="ai-ex-name">Leg Extension Machine</div>
+          <div class="ai-ex-detail">Quad isolation at peak contraction — adds detail and definition</div>
+          <div class="ai-ex-why">💡 Finishes quad development after squats and press. Full range builds VMO (inner quad tear drop muscle)</div>
+          <div class="ai-ex-tags"><span class="ai-ex-tag ai-tag-sets">3 Sets</span><span class="ai-ex-tag ai-tag-reps">15–20 Reps</span><span class="ai-ex-tag ai-tag-focus">Quads · Definition</span></div>
+        </div>
+      </div>
+
+      <div class="ai-ex-item">
+        <div class="ai-ex-num">07</div>
+        <div style="flex:1;">
+          <div class="ai-ex-name">Standing Calf Raises (Heavy)</div>
+          <div class="ai-ex-detail">Gastrocnemius — calves are often neglected. High reps, slow tempo</div>
+          <div class="ai-ex-why">💡 Calves respond to high volume. Go slow — 2 sec up, pause, 3 sec down. Do NOT rush this</div>
+          <div class="ai-ex-tags"><span class="ai-ex-tag ai-tag-sets">4 Sets</span><span class="ai-ex-tag ai-tag-reps">20–25 Reps</span><span class="ai-ex-tag ai-tag-focus">Calves · Soleus</span></div>
+        </div>
+      </div>
+
+      <div class="ai-ex-item" style="border-color:rgba(255,107,0,.3);background:rgba(255,107,0,.05);">
+        <div class="ai-ex-num">🔥</div>
+        <div style="flex:1;">
+          <div class="ai-ex-name" style="color:#FF6B35;">FINISHER — 10 min Stair Climber</div>
+          <div class="ai-ex-detail">Stair climber or incline treadmill walk at max incline. Your legs are already pumped — extra burn.</div>
+          <div class="ai-ex-why">💡 Post-leg cardio burns fat from legs and glutes preferentially. Visceral fat responds best to intense lower body work</div>
+          <div class="ai-ex-tags"><span class="ai-ex-tag" style="background:rgba(255,107,0,.15);color:#FF6B35;border:1px solid rgba(255,107,0,.3);">10 Min</span><span class="ai-ex-tag" style="background:rgba(255,107,0,.15);color:#FF6B35;border:1px solid rgba(255,107,0,.3);">~130 kcal</span></div>
+        </div>
+      </div>
+
+    </div>
+    <div class="hint-bar" style="margin-top:14px;background:rgba(255,80,80,.04);border-color:rgba(255,80,80,.15);">⏱ Est. Duration: 85–95 min &nbsp;·&nbsp; 🔥 Est. Calories: ~500–560 kcal &nbsp;·&nbsp; 💧 800 ml water · This is the hardest day — embrace it</div>
+  </div>
+
+  <!-- DAY 4 -->
+  <div class="sug-panel" id="sug-3">
+    <div class="ai-workout-day-title">Day 4 — Push (Chest + Triceps + Core)</div>
+    <div class="hint-bar">🎯 Thursday push day — heavier on triceps than Monday. Add core work to attack trunk fat (12.2 kg).</div>
+    <div class="ai-ex-list">
+
+      <div class="ai-ex-item">
+        <div class="ai-ex-num">01</div>
+        <div style="flex:1;">
+          <div class="ai-ex-name">Decline Barbell Bench Press</div>
+          <div class="ai-ex-detail">Lower chest — different angle from Monday's flat press</div>
+          <div class="ai-ex-why">💡 Hitting chest from multiple angles ensures complete development and burns more total calories per week</div>
+          <div class="ai-ex-tags"><span class="ai-ex-tag ai-tag-sets">4 Sets</span><span class="ai-ex-tag ai-tag-reps">12 Reps</span><span class="ai-ex-tag ai-tag-focus">Lower Chest</span></div>
+        </div>
+      </div>
+
+      <div class="ai-ex-item">
+        <div class="ai-ex-num">02</div>
+        <div style="flex:1;">
+          <div class="ai-ex-name">Dips (Weighted if possible)</div>
+          <div class="ai-ex-detail">Chest + tricep compound — great for lower pec definition</div>
+          <div class="ai-ex-why">💡 Dips hit lower chest and triceps simultaneously — more muscles = more calories = faster fat loss</div>
+          <div class="ai-ex-tags"><span class="ai-ex-tag ai-tag-sets">3 Sets</span><span class="ai-ex-tag ai-tag-reps">10–12 Reps</span><span class="ai-ex-tag ai-tag-focus">Chest · Triceps</span></div>
+        </div>
+      </div>
+
+      <div class="ai-ex-item">
+        <div class="ai-ex-num">03</div>
+        <div style="flex:1;">
+          <div class="ai-ex-name">Skull Crushers — EZ Bar</div>
+          <div class="ai-ex-detail">Long head tricep mass — biggest part of the arm</div>
+          <div class="ai-ex-why">💡 Long head only gets stretched with overhead movements — skull crushers are irreplaceable for arm thickness</div>
+          <div class="ai-ex-tags"><span class="ai-ex-tag ai-tag-sets">3 Sets</span><span class="ai-ex-tag ai-tag-reps">12 Reps</span><span class="ai-ex-tag ai-tag-focus">Triceps Long Head</span></div>
+        </div>
+      </div>
+
+      <div class="ai-ex-item">
+        <div class="ai-ex-num">04</div>
+        <div style="flex:1;">
+          <div class="ai-ex-name">Overhead Cable Tricep Extension</div>
+          <div class="ai-ex-detail">Constant tension + stretch — better than pushdowns for long head</div>
+          <div class="ai-ex-why">💡 Overhead position fully stretches long head — 2x more muscle activation vs standard pushdown</div>
+          <div class="ai-ex-tags"><span class="ai-ex-tag ai-tag-sets">3 Sets</span><span class="ai-ex-tag ai-tag-reps">15 Reps</span><span class="ai-ex-tag ai-tag-focus">Triceps</span></div>
+        </div>
+      </div>
+
+      <div class="ai-ex-item">
+        <div class="ai-ex-num">05</div>
+        <div style="flex:1;">
+          <div class="ai-ex-name">Cable Pushdown (Rope)</div>
+          <div class="ai-ex-detail">Lateral + medial head finisher — rope splits at bottom for extra contraction</div>
+          <div class="ai-ex-why">💡 Rope allows wrists to rotate — better for medial head development and pump</div>
+          <div class="ai-ex-tags"><span class="ai-ex-tag ai-tag-sets">3 Sets</span><span class="ai-ex-tag ai-tag-reps">15–20 Reps</span><span class="ai-ex-tag ai-tag-focus">Triceps · All Heads</span></div>
+        </div>
+      </div>
+
+      <div class="ai-ex-item" style="border-color:rgba(167,139,250,.3);">
+        <div class="ai-ex-num">CORE</div>
+        <div style="flex:1;">
+          <div class="ai-ex-name">Core Circuit (3 rounds)</div>
+          <div class="ai-ex-detail">Plank 45 sec → Hanging Knee Raise ×15 → Russian Twist ×20 → Mountain Climbers ×30</div>
+          <div class="ai-ex-why">💡 You have 12.2 kg trunk fat. Core work burns visceral fat AND strengthens the muscles beneath it — do this every Thursday</div>
+          <div class="ai-ex-tags"><span class="ai-ex-tag" style="background:rgba(167,139,250,.1);color:#a78bfa;border:1px solid rgba(167,139,250,.2);">3 Rounds</span><span class="ai-ex-tag" style="background:rgba(167,139,250,.1);color:#a78bfa;border:1px solid rgba(167,139,250,.2);">No Rest in Circuit</span></div>
+        </div>
+      </div>
+
+      <div class="ai-ex-item" style="border-color:rgba(255,107,0,.3);background:rgba(255,107,0,.05);">
+        <div class="ai-ex-num">🔥</div>
+        <div style="flex:1;">
+          <div class="ai-ex-name" style="color:#FF6B35;">FINISHER — Cross Trainer 12 min</div>
+          <div class="ai-ex-detail">Moderate pace, resistance level 8–10. Low impact, full body.</div>
+          <div class="ai-ex-why">💡 Cross trainer is easy on joints post-push day while still burning 100+ kcal in 12 min</div>
+          <div class="ai-ex-tags"><span class="ai-ex-tag" style="background:rgba(255,107,0,.15);color:#FF6B35;border:1px solid rgba(255,107,0,.3);">12 Min</span><span class="ai-ex-tag" style="background:rgba(255,107,0,.15);color:#FF6B35;border:1px solid rgba(255,107,0,.3);">~120 kcal</span></div>
+        </div>
+      </div>
+
+    </div>
+    <div class="hint-bar" style="margin-top:14px;background:rgba(0,229,255,.04);">⏱ Est. Duration: 75–85 min &nbsp;·&nbsp; 🔥 Est. Calories: ~400–440 kcal &nbsp;·&nbsp; 💧 600 ml water</div>
+  </div>
+
+  <!-- DAY 5 -->
+  <div class="sug-panel" id="sug-4">
+    <div class="ai-workout-day-title">Day 5 — Pull + Legs 2 (Back + Biceps + Leg Accessory)</div>
+    <div class="hint-bar">🎯 Friday: Back focus + 20 min leg accessories at the end. Two leg days = faster leg growth for Sandeep.</div>
+    <div class="ai-ex-list">
+
+      <div class="ai-ex-item">
+        <div class="ai-ex-num">01</div>
+        <div style="flex:1;">
+          <div class="ai-ex-name">Deadlift (Conventional)</div>
+          <div class="ai-ex-detail">Full posterior chain — the most anabolic exercise you can do</div>
+          <div class="ai-ex-why">💡 Deadlifts directly raise testosterone and growth hormone. Burns the most calories of any exercise (~300 kcal/session alone). Your BMR will rise as you get stronger here.</div>
+          <div class="ai-ex-tags"><span class="ai-ex-tag ai-tag-sets">4 Sets</span><span class="ai-ex-tag ai-tag-reps">8–10 Reps</span><span class="ai-ex-tag ai-tag-focus">Full Body · Posterior</span></div>
+        </div>
+      </div>
+
+      <div class="ai-ex-item">
+        <div class="ai-ex-num">02</div>
+        <div style="flex:1;">
+          <div class="ai-ex-name">V-Bar Lat Pulldown (Close Grip)</div>
+          <div class="ai-ex-detail">Inner lats + teres major — different grip from Monday</div>
+          <div class="ai-ex-why">💡 Close grip emphasizes inner lats and gives the back "thickness" rather than just width</div>
+          <div class="ai-ex-tags"><span class="ai-ex-tag ai-tag-sets">3 Sets</span><span class="ai-ex-tag ai-tag-reps">12 Reps</span><span class="ai-ex-tag ai-tag-focus">Inner Lats</span></div>
+        </div>
+      </div>
+
+      <div class="ai-ex-item">
+        <div class="ai-ex-num">03</div>
+        <div style="flex:1;">
+          <div class="ai-ex-name">Seated Wide-Grip Cable Row</div>
+          <div class="ai-ex-detail">Upper back + rear delt — different stimulus from Tuesday's close-grip row</div>
+          <div class="ai-ex-why">💡 Wide grip targets upper traps and rear delts more — builds the "thick upper back" look</div>
+          <div class="ai-ex-tags"><span class="ai-ex-tag ai-tag-sets">3 Sets</span><span class="ai-ex-tag ai-tag-reps">12 Reps</span><span class="ai-ex-tag ai-tag-focus">Upper Back</span></div>
+        </div>
+      </div>
+
+      <div class="ai-ex-item">
+        <div class="ai-ex-num">04</div>
+        <div style="flex:1;">
+          <div class="ai-ex-name">Preacher Curl — EZ Bar</div>
+          <div class="ai-ex-detail">Isolates short head — eliminates cheating, pure bicep work</div>
+          <div class="ai-ex-why">💡 Preacher eliminates momentum — forces honest bicep work. Best for building the lower bicep sweep</div>
+          <div class="ai-ex-tags"><span class="ai-ex-tag ai-tag-sets">3 Sets</span><span class="ai-ex-tag ai-tag-reps">12 Reps</span><span class="ai-ex-tag ai-tag-focus">Biceps · Short Head</span></div>
+        </div>
+      </div>
+
+      <div class="ai-ex-item">
+        <div class="ai-ex-num">05</div>
+        <div style="flex:1;">
+          <div class="ai-ex-name">Concentration Curl (DB)</div>
+          <div class="ai-ex-detail">Peak bicep contraction — maximum squeeze at top</div>
+          <div class="ai-ex-why">💡 Highest bicep peak activation of any curl variation. Great finisher before moving to legs</div>
+          <div class="ai-ex-tags"><span class="ai-ex-tag ai-tag-sets">3 Sets</span><span class="ai-ex-tag ai-tag-reps">12 Reps each</span><span class="ai-ex-tag ai-tag-focus">Biceps · Peak</span></div>
+        </div>
+      </div>
+
+      <div class="ai-ex-item" style="border-color:rgba(255,80,80,.2);">
+        <div class="ai-ex-num">LEG+</div>
+        <div style="flex:1;">
+          <div class="ai-ex-name">Leg Accessories (20 min) — 2nd Leg Session</div>
+          <div class="ai-ex-detail">Bulgarian Split Squat 3×10 each · Leg Curl 3×15 · Hip Abductor Machine 3×20 · Seated Calf Raise 3×20</div>
+          <div class="ai-ex-why">💡 Second leg session in the week. Lower volume but still triggers muscle growth. Your legs need extra stimulus to catch up from Under status.</div>
+          <div class="ai-ex-tags"><span class="ai-ex-tag" style="background:rgba(255,80,80,.1);color:#ff8080;border:1px solid rgba(255,80,80,.2);">20 Min</span><span class="ai-ex-tag ai-tag-focus">Legs · Glutes</span></div>
+        </div>
+      </div>
+
+      <div class="ai-ex-item" style="border-color:rgba(255,107,0,.3);background:rgba(255,107,0,.05);">
+        <div class="ai-ex-num">🔥</div>
+        <div style="flex:1;">
+          <div class="ai-ex-name" style="color:#FF6B35;">FINISHER — Stationary Bike HIIT</div>
+          <div class="ai-ex-detail">10 min: 20 sec max resistance sprint → 40 sec easy pace. Repeat 10 rounds.</div>
+          <div class="ai-ex-why">💡 Bike is low-impact after heavy deadlifts. Still creates EPOC (afterburn effect) — body burns fat for 24h after HIIT</div>
+          <div class="ai-ex-tags"><span class="ai-ex-tag" style="background:rgba(255,107,0,.15);color:#FF6B35;border:1px solid rgba(255,107,0,.3);">10 Min</span><span class="ai-ex-tag" style="background:rgba(255,107,0,.15);color:#FF6B35;border:1px solid rgba(255,107,0,.3);">~115 kcal</span></div>
+        </div>
+      </div>
+
+    </div>
+    <div class="hint-bar" style="margin-top:14px;background:rgba(0,229,255,.04);">⏱ Est. Duration: 80–90 min &nbsp;·&nbsp; 🔥 Est. Calories: ~460–500 kcal &nbsp;·&nbsp; 💧 700 ml water</div>
+  </div>
+
+  <!-- DAY 6 -->
+  <div class="sug-panel" id="sug-5">
+    <div class="ai-workout-day-title" style="border-left-color:#FF6B35;color:#FF6B35;">Day 6 — HIIT + Cardio + Active Recovery</div>
+    <div class="hint-bar" style="background:rgba(255,107,0,.06);border-color:rgba(255,107,0,.2);color:#FF6B35;">🔥 This is your dedicated fat-burning day. Visceral fat level 9 requires this. No weights — pure cardio and mobility.</div>
+    <div class="ai-ex-list">
+
+      <div class="ai-ex-item">
+        <div class="ai-ex-num">01</div>
+        <div style="flex:1;">
+          <div class="ai-ex-name">Warm-Up — 5 min Treadmill Walk</div>
+          <div class="ai-ex-detail">Brisk walk at 5–6 km/h, incline 3%. Gets heart rate to Zone 2.</div>
+          <div class="ai-ex-why">💡 Warm-up is not optional. Cold cardio causes injury and reduces fat-burning efficiency</div>
+          <div class="ai-ex-tags"><span class="ai-ex-tag ai-tag-sets">5 Min</span><span class="ai-ex-tag ai-tag-focus">Warm-Up</span></div>
+        </div>
+      </div>
+
+      <div class="ai-ex-item" style="border-color:rgba(255,107,0,.3);">
+        <div class="ai-ex-num">02</div>
+        <div style="flex:1;">
+          <div class="ai-ex-name">Treadmill HIIT — Sprint Intervals</div>
+          <div class="ai-ex-detail">20 min: 45 sec sprint (level 10–14) → 75 sec walk. Repeat 12 rounds.</div>
+          <div class="ai-ex-why">💡 HIIT burns visceral fat 3× faster than steady-state cardio. This is the single best thing for your visceral fat level 9</div>
+          <div class="ai-ex-tags"><span class="ai-ex-tag" style="background:rgba(255,107,0,.15);color:#FF6B35;border:1px solid rgba(255,107,0,.3);">20 Min</span><span class="ai-ex-tag" style="background:rgba(255,107,0,.15);color:#FF6B35;border:1px solid rgba(255,107,0,.3);">~220 kcal</span><span class="ai-ex-tag ai-tag-focus">Visceral Fat</span></div>
+        </div>
+      </div>
+
+      <div class="ai-ex-item">
+        <div class="ai-ex-num">03</div>
+        <div style="flex:1;">
+          <div class="ai-ex-name">Incline Treadmill Walk</div>
+          <div class="ai-ex-detail">15 min: 6 km/h, incline 8–10%. Zone 2 fat-burning heart rate.</div>
+          <div class="ai-ex-why">💡 Zone 2 cardio directly burns fat as fuel. After HIIT depletes glycogen, walk burns almost 100% fat</div>
+          <div class="ai-ex-tags"><span class="ai-ex-tag ai-tag-sets">15 Min</span><span class="ai-ex-tag ai-tag-reps">~110 kcal</span><span class="ai-ex-tag ai-tag-focus">Fat Oxidation</span></div>
+        </div>
+      </div>
+
+      <div class="ai-ex-item">
+        <div class="ai-ex-num">04</div>
+        <div style="flex:1;">
+          <div class="ai-ex-name">Jump Rope — Alternate Footwork</div>
+          <div class="ai-ex-detail">3 rounds × 3 min. Rest 1 min between rounds. Any style.</div>
+          <div class="ai-ex-why">💡 Jump rope burns 341 kcal/30 min according to your InBody chart. Best calorie-per-minute exercise available</div>
+          <div class="ai-ex-tags"><span class="ai-ex-tag ai-tag-sets">3 Rounds</span><span class="ai-ex-tag ai-tag-reps">3 min each</span><span class="ai-ex-tag ai-tag-focus">~100 kcal</span></div>
+        </div>
+      </div>
+
+      <div class="ai-ex-item" style="border-color:rgba(167,139,250,.3);">
+        <div class="ai-ex-num">05</div>
+        <div style="flex:1;">
+          <div class="ai-ex-name">Full Body Stretch + Mobility — 15 min</div>
+          <div class="ai-ex-detail">Hip flexors · hamstrings · thoracic spine · shoulders · calves. Hold each 30–45 sec.</div>
+          <div class="ai-ex-why">💡 Stretching improves blood flow to muscles, reduces soreness, and keeps you injury-free. Non-negotiable on recovery day</div>
+          <div class="ai-ex-tags"><span class="ai-ex-tag" style="background:rgba(167,139,250,.1);color:#a78bfa;border:1px solid rgba(167,139,250,.2);">15 Min</span><span class="ai-ex-tag ai-tag-focus">Recovery · Flexibility</span></div>
+        </div>
+      </div>
+
+    </div>
+    <div class="hint-bar" style="margin-top:14px;background:rgba(255,107,0,.04);border-color:rgba(255,107,0,.15);">⏱ Total Duration: 60–65 min &nbsp;·&nbsp; 🔥 Est. Calories: ~530–580 kcal &nbsp;·&nbsp; 💧 1 Litre water · Sunday = complete rest</div>
+  </div>
+
+  <!-- Weekly Summary -->
+  <div class="bca-section-label" style="margin-top:28px;">Weekly Summary</div>
+  <div class="bca-macros" style="margin-bottom:16px;">
+    <div class="bca-stat"><span class="bca-stat-val">6</span><div class="bca-stat-label">Training Days</div></div>
+    <div class="bca-stat"><span class="bca-stat-val" style="color:#FF6B35;">2</span><div class="bca-stat-label">Leg Days</div></div>
+    <div class="bca-stat"><span class="bca-stat-val" style="color:#00ff88;">~2500</span><div class="bca-stat-label">Kcal / Week</div></div>
+    <div class="bca-stat"><span class="bca-stat-val">1</span><div class="bca-stat-label">Rest Day (Sun)</div></div>
+  </div>
+
+  <div class="takeaway-grid">
+    <div class="tw-card" style="border-color:rgba(0,229,255,.25);">
+      <div class="tw-badge" style="color:#00E5FF;">📅 MON + THU</div>
+      <div class="tw-text">Push days (Chest/Shoulders). Different angles each day — flat vs decline, lateral raises stay same.</div>
+    </div>
+    <div class="tw-card" style="border-color:rgba(0,229,255,.25);">
+      <div class="tw-badge" style="color:#00E5FF;">📅 TUE + FRI</div>
+      <div class="tw-text">Pull days (Back/Biceps). Different grips and exercises — Fri includes deadlift + leg accessories.</div>
+    </div>
+    <div class="tw-card" style="border-color:rgba(255,80,80,.25);">
+      <div class="tw-badge" style="color:#ff5050;">📅 WED (Priority)</div>
+      <div class="tw-text">Full leg day — your most important session. Squats, RDL, lunges, extensions, curls, calves.</div>
+    </div>
+    <div class="tw-card" style="border-color:rgba(255,107,0,.25);">
+      <div class="tw-badge" style="color:#FF6B35;">📅 SAT (Fat Burn)</div>
+      <div class="tw-text">HIIT + cardio + stretch. Targets visceral fat level 9. Most kcal burned in the week.</div>
+    </div>
+  </div>
+
+</div>
+</div><!-- /page-ai -->
+
+<!-- ══════════════════════════ DAILY ROUTINE PAGE ══════════════════════════ -->
+<div class="page-section" id="page-routine">
+<div class="routine-wrap">
+
+  <!-- Hero -->
+  <div class="routine-hero">
+    <div class="routine-hero-icon">⏰</div>
+    <div>
+      <div class="routine-hero-title">Sandeep's Daily Routine</div>
+      <div class="routine-hero-sub">Optimised for a React JS / React Native developer working 10 AM – 6 PM. Morning gym schedule designed around your 6:00 AM wake-up — gym done before work starts.</div>
+      <div class="routine-chips">
+        <span class="routine-chip">6:00 AM WAKE UP</span>
+        <span class="routine-chip">7:00 AM GYM</span>
+        <span class="routine-chip">10 AM–6 PM OFFICE</span>
+        <span class="routine-chip">MORNING IS BEST</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Timeline -->
+  <div class="routine-section-label">Full Day Timeline</div>
+  <div class="timeline">
+
+    <div class="tl-item highlight">
+      <div class="tl-dot"></div>
+      <div class="tl-card">
+        <div class="tl-emoji">🌅</div>
+        <div class="tl-time">6:00 AM</div>
+        <div class="tl-content">
+          <div class="tl-title">Wake Up</div>
+          <div class="tl-desc">No snooze. Alarm goes off — get up immediately. Splash cold water on face.</div>
+          <span class="tl-tag tl-tag-morning">Morning Start</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-item highlight">
+      <div class="tl-dot"></div>
+      <div class="tl-card">
+        <div class="tl-emoji">🫚</div>
+        <div class="tl-time">6:00 – 6:10 AM</div>
+        <div class="tl-content">
+          <div class="tl-title">Morning Detox Drink</div>
+          <div class="tl-desc">Warm water + lemon + soaked methi seeds + 2 raw garlic cloves. Kickstarts metabolism and reduces visceral fat.</div>
+          <span class="tl-tag tl-tag-food">Detox · Fat Burn</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-card">
+        <div class="tl-emoji">🪥</div>
+        <div class="tl-time">6:10 – 6:25 AM</div>
+        <div class="tl-content">
+          <div class="tl-title">Freshen Up + Get Ready</div>
+          <div class="tl-desc">Brush, freshen up, change into gym clothes. Keep it quick — no phone scrolling.</div>
+          <span class="tl-tag tl-tag-morning">Prep</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-item food-block">
+      <div class="tl-dot"></div>
+      <div class="tl-card">
+        <div class="tl-emoji">🍌</div>
+        <div class="tl-time">6:25 – 6:35 AM</div>
+        <div class="tl-content">
+          <div class="tl-title">Pre-Workout Fuel</div>
+          <div class="tl-desc">1 banana + Sattu drink (2 tbsp sattu + water + lemon). Light, fast-digesting carbs + protein to fuel the session.</div>
+          <span class="tl-tag tl-tag-food">Pre-Workout Meal</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-item gym-block">
+      <div class="tl-dot"></div>
+      <div class="tl-card">
+        <div class="tl-emoji">🏋️</div>
+        <div class="tl-time">6:45 – 8:00 AM</div>
+        <div class="tl-content">
+          <div class="tl-title">GYM SESSION — Gold's Gym Mohali</div>
+          <div class="tl-desc">75 min focused training. Follow the Suggested Plan tab for day-wise exercises. 10 min HIIT finisher at end of every session.</div>
+          <span class="tl-tag tl-tag-gym">75 Min · ~420 kcal</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-item food-block">
+      <div class="tl-dot"></div>
+      <div class="tl-card">
+        <div class="tl-emoji">🥚</div>
+        <div class="tl-time">8:00 – 8:10 AM</div>
+        <div class="tl-content">
+          <div class="tl-title">Post-Workout — Immediate Recovery</div>
+          <div class="tl-desc">3 boiled egg whites (non-veg days) OR 150g low-fat dahi (veg days). Protein within 30 min of gym = muscle recovery starts.</div>
+          <span class="tl-tag tl-tag-food">Post-Workout Protein</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-card">
+        <div class="tl-emoji">🚿</div>
+        <div class="tl-time">8:10 – 8:25 AM</div>
+        <div class="tl-content">
+          <div class="tl-title">Shower + Get Ready for Office</div>
+          <div class="tl-desc">Cool shower post-gym reduces inflammation. Dress up for office comfortably.</div>
+          <span class="tl-tag tl-tag-morning">Recovery</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-item food-block">
+      <div class="tl-dot"></div>
+      <div class="tl-card">
+        <div class="tl-emoji">🍳</div>
+        <div class="tl-time">8:30 – 9:00 AM</div>
+        <div class="tl-content">
+          <div class="tl-title">Power Breakfast</div>
+          <div class="tl-desc">3 eggs (scrambled/boiled) + 2 multigrain rotis + low-fat dahi OR Moong dal chilla + paneer (veg days). High protein to keep you full till lunch.</div>
+          <span class="tl-tag tl-tag-food">~450 kcal · 32g Protein</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-card">
+        <div class="tl-emoji">🚗</div>
+        <div class="tl-time">9:15 – 9:50 AM</div>
+        <div class="tl-content">
+          <div class="tl-title">Commute to Office</div>
+          <div class="tl-desc">Listen to a podcast or music. Avoid heavy screen time — let your brain relax before the coding day starts.</div>
+          <span class="tl-tag tl-tag-morning">Commute</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-item work-block">
+      <div class="tl-dot"></div>
+      <div class="tl-card">
+        <div class="tl-emoji">💻</div>
+        <div class="tl-time">10:00 AM</div>
+        <div class="tl-content">
+          <div class="tl-title">Work Starts — React JS / React Native</div>
+          <div class="tl-desc">You arrive fresh, energised, and focused. Endorphins from gym = 30–40% better cognitive performance in the first 3 hours. Best time to tackle complex code.</div>
+          <span class="tl-tag tl-tag-work">Deep Work Mode</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-item food-block">
+      <div class="tl-dot"></div>
+      <div class="tl-card">
+        <div class="tl-emoji">🍎</div>
+        <div class="tl-time">10:30 – 11:00 AM</div>
+        <div class="tl-content">
+          <div class="tl-title">Mid-Morning Snack at Desk</div>
+          <div class="tl-desc">1 seasonal fruit (apple/guava/pear) + 10 almonds + 5 walnuts. Prevents blood sugar dip while coding. Keep nuts in your drawer.</div>
+          <span class="tl-tag tl-tag-food">~150 kcal · Brain Fuel</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-item work-block">
+      <div class="tl-dot"></div>
+      <div class="tl-card">
+        <div class="tl-emoji">🧘</div>
+        <div class="tl-time">Every 90 Min</div>
+        <div class="tl-content">
+          <div class="tl-title">Desk Break — 3 Min Stretch</div>
+          <div class="tl-desc">Stand up. Hip flexor stretch (30 sec each leg) + chest opener + neck rolls + thoracic rotation. Sets a timer — sitting 8 hrs makes leg day harder and worsens posture.</div>
+          <span class="tl-tag tl-tag-work">Posture · Mobility</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-item food-block">
+      <div class="tl-dot"></div>
+      <div class="tl-card">
+        <div class="tl-emoji">🍛</div>
+        <div class="tl-time">1:00 – 1:30 PM</div>
+        <div class="tl-content">
+          <div class="tl-title">Lunch Break</div>
+          <div class="tl-desc">Grilled chicken / dal + brown rice or 2 rotis + kachumber salad (eat salad FIRST). Avoid heavy oily food — post-lunch drowsiness will kill your afternoon productivity.</div>
+          <span class="tl-tag tl-tag-food">~550 kcal · Power Lunch</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-item food-block">
+      <div class="tl-dot"></div>
+      <div class="tl-card">
+        <div class="tl-emoji">🥛</div>
+        <div class="tl-time">4:00 – 4:30 PM</div>
+        <div class="tl-content">
+          <div class="tl-title">Afternoon Snack</div>
+          <div class="tl-desc">Buttermilk (chaach) + 1 fruit OR a small bowl of sprouts. Keeps energy steady through the last 2 hours of work. No tea/coffee after 4 PM — it disrupts sleep.</div>
+          <span class="tl-tag tl-tag-food">~120 kcal · Energy</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-item work-block">
+      <div class="tl-dot"></div>
+      <div class="tl-card">
+        <div class="tl-emoji">🖥️</div>
+        <div class="tl-time">4:30 – 6:00 PM</div>
+        <div class="tl-content">
+          <div class="tl-title">Wrap Up Work</div>
+          <div class="tl-desc">Finish PRs, code reviews, and standups. Avoid starting new heavy features — wrap up and plan tomorrow's tasks. Leave on time at 6 PM.</div>
+          <span class="tl-tag tl-tag-work">Wrap Up</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-card">
+        <div class="tl-emoji">🚗</div>
+        <div class="tl-time">6:00 – 6:45 PM</div>
+        <div class="tl-content">
+          <div class="tl-title">Commute Home</div>
+          <div class="tl-desc">Decompress. No work calls or Slack after leaving office. This is your mental recovery time.</div>
+          <span class="tl-tag tl-tag-morning">Decompression</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-item food-block">
+      <div class="tl-dot"></div>
+      <div class="tl-card">
+        <div class="tl-emoji">🍲</div>
+        <div class="tl-time">7:30 – 8:00 PM</div>
+        <div class="tl-content">
+          <div class="tl-title">Light Dinner</div>
+          <div class="tl-desc">Grilled fish / egg curry + stir-fried sabzi + 1 roti (no rice at night) OR Palak paneer + sprouts salad. Eat by 8 PM — late eating goes directly to fat.</div>
+          <span class="tl-tag tl-tag-food">~450 kcal · Light</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-card">
+        <div class="tl-emoji">📱</div>
+        <div class="tl-time">8:00 – 9:30 PM</div>
+        <div class="tl-content">
+          <div class="tl-title">Personal Time — Family / Rest</div>
+          <div class="tl-desc">Family time, light reading, side projects if any. Keep screen brightness low. No heavy coding — your brain needs rest to consolidate today's learning.</div>
+          <span class="tl-tag tl-tag-rest">Relax</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-item food-block">
+      <div class="tl-dot"></div>
+      <div class="tl-card">
+        <div class="tl-emoji">🥛</div>
+        <div class="tl-time">9:30 – 10:00 PM</div>
+        <div class="tl-content">
+          <div class="tl-title">Bedtime Drink + Night Prep</div>
+          <div class="tl-desc">Warm haldi doodh (200 ml low-fat milk + pinch of turmeric + ashwagandha optional). Then prep for tomorrow: pack gym bag, soak methi seeds, keep banana ready.</div>
+          <span class="tl-tag tl-tag-food">Casein Protein · Sleep Aid</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-item rest-block">
+      <div class="tl-dot"></div>
+      <div class="tl-card">
+        <div class="tl-emoji">😴</div>
+        <div class="tl-time">10:00 – 10:30 PM</div>
+        <div class="tl-content">
+          <div class="tl-title">Sleep — 7.5 to 8 Hours</div>
+          <div class="tl-desc">Phone on Do Not Disturb. No screens in bed. Sleep is when your body burns fat, builds muscle, and consolidates React Native patterns 😄. This is non-negotiable for your goals.</div>
+          <span class="tl-tag tl-tag-rest">Fat Burn · Muscle Build · Recovery</span>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /timeline -->
+
+  <!-- Night Before Prep -->
+  <div class="routine-section-label">Night Before Checklist</div>
+  <div class="prep-grid">
+    <div class="prep-card">
+      <div class="prep-icon">🎒</div>
+      <div class="prep-title">Pack Gym Bag</div>
+      <div class="prep-text">Clothes, towel, water bottle, earphones. Zero decisions in the morning = zero excuses.</div>
+    </div>
+    <div class="prep-card">
+      <div class="prep-icon">🌿</div>
+      <div class="prep-title">Soak Methi Seeds</div>
+      <div class="prep-text">1 tsp in small cup of water overnight. Ready to consume at 6 AM with warm water.</div>
+    </div>
+    <div class="prep-card">
+      <div class="prep-icon">🍌</div>
+      <div class="prep-title">Keep Banana Ready</div>
+      <div class="prep-text">Place on kitchen counter. Pre-workout fuel should require zero effort at 6:25 AM.</div>
+    </div>
+    <div class="prep-card">
+      <div class="prep-icon">👗</div>
+      <div class="prep-title">Office Clothes Ready</div>
+      <div class="prep-text">Iron and keep out. Post-gym you should be showering and dressing in under 20 min.</div>
+    </div>
+    <div class="prep-card">
+      <div class="prep-icon">📋</div>
+      <div class="prep-title">Check Tomorrow's Workout</div>
+      <div class="prep-text">Open the Suggested Plan tab tonight so you know exactly what muscles you're training tomorrow.</div>
+    </div>
+    <div class="prep-card">
+      <div class="prep-icon">⏰</div>
+      <div class="prep-title">Set Alarm — 6:00 AM Sharp</div>
+      <div class="prep-text">One alarm only. No snooze option. Place phone across the room if needed.</div>
+    </div>
+  </div>
+
+  <!-- IT Developer Tips -->
+  <div class="routine-section-label">IT Developer Health Tips</div>
+  <div class="it-tip-grid">
+    <div class="it-tip">
+      <div class="it-tip-icon">🪑</div>
+      <div class="it-tip-title">90-Min Desk Rule</div>
+      <div class="it-tip-text">Set a timer every 90 min. Stand up, stretch hip flexors and thoracic spine for 3 min. Sitting all day stiffens your hips and makes leg day much harder.</div>
+    </div>
+    <div class="it-tip">
+      <div class="it-tip-icon">💧</div>
+      <div class="it-tip-title">Water Bottle at Desk</div>
+      <div class="it-tip-text">Keep a 1L bottle visible on desk. Refill twice. Dehydration = fatigue + poor code focus. Your body water (33.6 L) is already low.</div>
+    </div>
+    <div class="it-tip">
+      <div class="it-tip-icon">👀</div>
+      <div class="it-tip-title">20-20-20 Eye Rule</div>
+      <div class="it-tip-text">Every 20 min, look 20 feet away for 20 seconds. Reduces eye strain — React debugging sessions are long.</div>
+    </div>
+    <div class="it-tip">
+      <div class="it-tip-icon">🍵</div>
+      <div class="it-tip-title">No Tea After 4 PM</div>
+      <div class="it-tip-text">Caffeine after 4 PM delays sleep by 1–2 hours. Poor sleep raises cortisol → stores fat. Swap to green tea or chaach.</div>
+    </div>
+    <div class="it-tip">
+      <div class="it-tip-icon">🚶</div>
+      <div class="it-tip-title">Walk During Calls</div>
+      <div class="it-tip-text">Standup meetings, 1-on-1s — walk during these. 15 min of walking burns ~60 kcal and clears mental fog.</div>
+    </div>
+    <div class="it-tip">
+      <div class="it-tip-icon">📵</div>
+      <div class="it-tip-title">No Work After 9 PM</div>
+      <div class="it-tip-text">Late-night debugging spikes cortisol, destroys sleep quality, and directly increases belly fat. Log off and recover.</div>
+    </div>
+  </div>
+
+  <!-- Weekly Summary Bar -->
+  <div class="routine-section-label">Weekly Calorie Summary</div>
+  <div class="bca-macros" style="margin-bottom:0;">
+    <div class="bca-stat"><span class="bca-stat-val">~1850</span><div class="bca-stat-label">Daily Intake</div></div>
+    <div class="bca-stat"><span class="bca-stat-val" style="color:#FF6B35;">~420</span><div class="bca-stat-label">Gym Burn/Day</div></div>
+    <div class="bca-stat"><span class="bca-stat-val" style="color:#00ff88;">~1430</span><div class="bca-stat-label">Net Calories</div></div>
+    <div class="bca-stat"><span class="bca-stat-val" style="color:#a78bfa;">~500g</span><div class="bca-stat-label">Fat Loss/Week</div></div>
+  </div>
+
+</div>
+</div><!-- /page-routine -->
+
+<!-- ══════════════════════════ GOAL TIMELINE PAGE ══════════════════════════ -->
+<div class="page-section" id="page-goal">
+<div class="goal-wrap">
+
+  <!-- Hero -->
+  <div class="goal-hero">
+    <div class="goal-hero-icon">🎯</div>
+    <div>
+      <div class="goal-hero-title">Goal Achievement Timeline</div>
+      <div class="goal-hero-sub">Based on your InBody results: lose 13.3 kg fat, gain 5.1 kg muscle. Following this plan consistently at 0.5–0.75 kg fat loss per week — here's exactly what to expect month by month.</div>
+    </div>
+  </div>
+
+  <!-- Big 3 Goals -->
+  <div class="goal-stats">
+    <div class="goal-stat">
+      <span class="goal-stat-val" style="color:#ff5050;">−13.3 kg</span>
+      <div class="goal-stat-label">Fat to Lose</div>
+    </div>
+    <div class="goal-stat">
+      <span class="goal-stat-val" style="color:#00ff88;">+5.1 kg</span>
+      <div class="goal-stat-label">Muscle to Gain</div>
+    </div>
+    <div class="goal-stat">
+      <span class="goal-stat-val" style="color:#00E5FF;">6–8 Mo</span>
+      <div class="goal-stat-label">Realistic Duration</div>
+    </div>
+  </div>
+
+  <!-- Month by Month -->
+  <div class="bca-section-label">Month-by-Month Breakdown</div>
+  <div class="month-timeline">
+
+    <!-- MONTH 1 -->
+    <div class="month-card open">
+      <div class="month-header" onclick="toggleMonth(this)">
+        <div class="month-num" style="background:rgba(0,229,255,.12);color:#00E5FF;">M1</div>
+        <div class="month-title-wrap">
+          <div class="month-title">Month 1 — Foundation &amp; Adaptation</div>
+          <div class="month-subtitle">Body adapts to the new routine · Weeks 1–4</div>
+        </div>
+        <span class="month-badge" style="background:rgba(0,229,255,.12);color:#00E5FF;border:1px solid rgba(0,229,255,.25);">~3 kg lost</span>
+        <span class="month-chev">▼</span>
+      </div>
+      <div class="month-body">
+        <div class="month-progress-row">
+          <span class="month-progress-label">Fat Lost</span>
+          <div class="month-progress-track"><div class="month-progress-fill" style="width:22%;background:linear-gradient(90deg,#ff5050,#ff8080);"></div></div>
+          <span class="month-progress-val" style="color:#ff5050;">~3 kg</span>
+        </div>
+        <div class="month-progress-row">
+          <span class="month-progress-label">Muscle Gained</span>
+          <div class="month-progress-track"><div class="month-progress-fill" style="width:14%;background:linear-gradient(90deg,#00ff88,#00c870);"></div></div>
+          <span class="month-progress-val" style="color:#00ff88;">~0.7 kg</span>
+        </div>
+        <div class="month-progress-row">
+          <span class="month-progress-label">Weight</span>
+          <div class="month-progress-track"><div class="month-progress-fill" style="width:30%;background:linear-gradient(90deg,#00E5FF,#00b8d4);"></div></div>
+          <span class="month-progress-val" style="color:#00E5FF;">~65 kg</span>
+        </div>
+        <div class="month-items">
+          <div class="month-item"><div class="month-item-label">Body Fat %</div><div class="month-item-val" style="color:#ff5050;">~30.5%</div></div>
+          <div class="month-item"><div class="month-item-label">From Start</div><div class="month-item-val">32.7% → 30.5%</div></div>
+          <div class="month-item"><div class="month-item-label">Fitness Score</div><div class="month-item-val" style="color:#00E5FF;">~65–67</div></div>
+          <div class="month-item"><div class="month-item-label">Energy Level</div><div class="month-item-val" style="color:#00ff88;">Noticeably ↑</div></div>
+        </div>
+        <div class="month-milestones" style="margin-top:14px;">
+          <div class="milestone"><span class="ms-icon">✅</span><span class="ms-text"><strong>Week 1–2:</strong> Water weight drops 1.5–2 kg fast. Scale moves quickly — this is motivating but not all fat yet.</span></div>
+          <div class="milestone"><span class="ms-icon">✅</span><span class="ms-text"><strong>Week 3–4:</strong> Real fat burning starts. Gym soreness reduces. Sleep improves. Energy higher at work.</span></div>
+          <div class="milestone"><span class="ms-icon">🎯</span><span class="ms-text"><strong>Visible sign:</strong> Belt notch gets tighter. Face looks slightly leaner. Clothes fit better around waist.</span></div>
+          <div class="milestone"><span class="ms-icon">⚠</span><span class="ms-text"><strong>Watch out:</strong> Don't give up in week 2–3 when scale slows. This is normal — body is recalibrating.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MONTH 2 -->
+    <div class="month-card">
+      <div class="month-header" onclick="toggleMonth(this)">
+        <div class="month-num" style="background:rgba(255,214,0,.12);color:#FFD600;">M2</div>
+        <div class="month-title-wrap">
+          <div class="month-title">Month 2 — Momentum Builds</div>
+          <div class="month-subtitle">Consistent fat loss · Muscle starts showing · Weeks 5–8</div>
+        </div>
+        <span class="month-badge" style="background:rgba(255,214,0,.12);color:#FFD600;border:1px solid rgba(255,214,0,.25);">~2.5 kg lost</span>
+        <span class="month-chev">▼</span>
+      </div>
+      <div class="month-body">
+        <div class="month-progress-row">
+          <span class="month-progress-label">Fat Lost</span>
+          <div class="month-progress-track"><div class="month-progress-fill" style="width:41%;background:linear-gradient(90deg,#ff5050,#ff8080);"></div></div>
+          <span class="month-progress-val" style="color:#ff5050;">~5.5 kg total</span>
+        </div>
+        <div class="month-progress-row">
+          <span class="month-progress-label">Muscle Gained</span>
+          <div class="month-progress-track"><div class="month-progress-fill" style="width:27%;background:linear-gradient(90deg,#00ff88,#00c870);"></div></div>
+          <span class="month-progress-val" style="color:#00ff88;">~1.4 kg total</span>
+        </div>
+        <div class="month-progress-row">
+          <span class="month-progress-label">Weight</span>
+          <div class="month-progress-track"><div class="month-progress-fill" style="width:48%;background:linear-gradient(90deg,#00E5FF,#00b8d4);"></div></div>
+          <span class="month-progress-val" style="color:#00E5FF;">~63 kg</span>
+        </div>
+        <div class="month-items">
+          <div class="month-item"><div class="month-item-label">Body Fat %</div><div class="month-item-val" style="color:#ff5050;">~28.5%</div></div>
+          <div class="month-item"><div class="month-item-label">BMR</div><div class="month-item-val" style="color:#00ff88;">~1410 kcal ↑</div></div>
+          <div class="month-item"><div class="month-item-label">Visceral Fat</div><div class="month-item-val" style="color:#FFD600;">~7–8 ↓</div></div>
+          <div class="month-item"><div class="month-item-label">Leg Muscle</div><div class="month-item-val">Starting ↑</div></div>
+        </div>
+        <div class="month-milestones" style="margin-top:14px;">
+          <div class="milestone"><span class="ms-icon">✅</span><span class="ms-text"><strong>Week 5–6:</strong> People around you start noticing. "Have you lost weight?" comments begin. This is your fuel.</span></div>
+          <div class="milestone"><span class="ms-icon">✅</span><span class="ms-text"><strong>Week 7–8:</strong> Strength in gym increases — squats, bench, deadlift all go up. Muscle is growing.</span></div>
+          <div class="milestone"><span class="ms-icon">🎯</span><span class="ms-text"><strong>Visible sign:</strong> Stomach visibly flatter. Arm veins starting to show. Shirts looser around the belly.</span></div>
+          <div class="milestone"><span class="ms-icon">⚠</span><span class="ms-text"><strong>Plateau risk:</strong> Body may adapt — if scale stalls for 2 weeks, add 5 min extra HIIT or reduce 100 kcal from dinner.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MONTH 3 -->
+    <div class="month-card">
+      <div class="month-header" onclick="toggleMonth(this)">
+        <div class="month-num" style="background:rgba(255,107,0,.12);color:#FF6B35;">M3</div>
+        <div class="month-title-wrap">
+          <div class="month-title">Month 3 — Visible Transformation</div>
+          <div class="month-subtitle">Physique clearly changing · Legs catching up · Weeks 9–12</div>
+        </div>
+        <span class="month-badge" style="background:rgba(255,107,0,.12);color:#FF6B35;border:1px solid rgba(255,107,0,.25);">~2 kg lost</span>
+        <span class="month-chev">▼</span>
+      </div>
+      <div class="month-body">
+        <div class="month-progress-row">
+          <span class="month-progress-label">Fat Lost</span>
+          <div class="month-progress-track"><div class="month-progress-fill" style="width:58%;background:linear-gradient(90deg,#ff5050,#ff8080);"></div></div>
+          <span class="month-progress-val" style="color:#ff5050;">~7.5 kg total</span>
+        </div>
+        <div class="month-progress-row">
+          <span class="month-progress-label">Muscle Gained</span>
+          <div class="month-progress-track"><div class="month-progress-fill" style="width:41%;background:linear-gradient(90deg,#00ff88,#00c870);"></div></div>
+          <span class="month-progress-val" style="color:#00ff88;">~2.1 kg total</span>
+        </div>
+        <div class="month-progress-row">
+          <span class="month-progress-label">Weight</span>
+          <div class="month-progress-track"><div class="month-progress-fill" style="width:62%;background:linear-gradient(90deg,#00E5FF,#00b8d4);"></div></div>
+          <span class="month-progress-val" style="color:#00E5FF;">~61.5 kg</span>
+        </div>
+        <div class="month-items">
+          <div class="month-item"><div class="month-item-label">Body Fat %</div><div class="month-item-val" style="color:#FFD600;">~26%</div></div>
+          <div class="month-item"><div class="month-item-label">BMR</div><div class="month-item-val" style="color:#00ff88;">~1440 kcal ↑</div></div>
+          <div class="month-item"><div class="month-item-label">Visceral Fat</div><div class="month-item-val" style="color:#00ff88;">~6 ↓ Normal</div></div>
+          <div class="month-item"><div class="month-item-label">WHR</div><div class="month-item-val" style="color:#FFD600;">~0.95 ↓</div></div>
+        </div>
+        <div class="month-milestones" style="margin-top:14px;">
+          <div class="milestone"><span class="ms-icon">✅</span><span class="ms-text"><strong>Big win:</strong> Visceral fat drops to normal range (below 9). This is a massive health milestone — heart and organ health improves significantly.</span></div>
+          <div class="milestone"><span class="ms-icon">✅</span><span class="ms-text"><strong>Muscle:</strong> Legs are visibly more defined. Squat weight has increased by 10–15 kg since Month 1. Arms showing shape.</span></div>
+          <div class="milestone"><span class="ms-icon">🎯</span><span class="ms-text"><strong>Visible sign:</strong> Old clothes from 2 years ago start fitting. Chest and shoulder definition visible under T-shirt.</span></div>
+          <div class="milestone"><span class="ms-icon">💡</span><span class="ms-text"><strong>This is the hardest stretch</strong> — fat loss slows as body adapts. Stay consistent. Do NOT take cheat weeks.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MONTH 4-5 -->
+    <div class="month-card">
+      <div class="month-header" onclick="toggleMonth(this)">
+        <div class="month-num" style="background:rgba(167,139,250,.15);color:#a78bfa;">M4–5</div>
+        <div class="month-title-wrap">
+          <div class="month-title">Month 4–5 — Definition Phase</div>
+          <div class="month-subtitle">Muscle definition appears · Final fat target in sight · Weeks 13–20</div>
+        </div>
+        <span class="month-badge" style="background:rgba(167,139,250,.15);color:#a78bfa;border:1px solid rgba(167,139,250,.3);">~4 kg lost</span>
+        <span class="month-chev">▼</span>
+      </div>
+      <div class="month-body">
+        <div class="month-progress-row">
+          <span class="month-progress-label">Fat Lost</span>
+          <div class="month-progress-track"><div class="month-progress-fill" style="width:83%;background:linear-gradient(90deg,#ff5050,#ff8080);"></div></div>
+          <span class="month-progress-val" style="color:#ff5050;">~11 kg total</span>
+        </div>
+        <div class="month-progress-row">
+          <span class="month-progress-label">Muscle Gained</span>
+          <div class="month-progress-track"><div class="month-progress-fill" style="width:72%;background:linear-gradient(90deg,#00ff88,#00c870);"></div></div>
+          <span class="month-progress-val" style="color:#00ff88;">~3.7 kg total</span>
+        </div>
+        <div class="month-progress-row">
+          <span class="month-progress-label">Weight</span>
+          <div class="month-progress-track"><div class="month-progress-fill" style="width:77%;background:linear-gradient(90deg,#00E5FF,#00b8d4);"></div></div>
+          <span class="month-progress-val" style="color:#00E5FF;">~61 kg</span>
+        </div>
+        <div class="month-items">
+          <div class="month-item"><div class="month-item-label">Body Fat %</div><div class="month-item-val" style="color:#FFD600;">~22–23%</div></div>
+          <div class="month-item"><div class="month-item-label">BMR</div><div class="month-item-val" style="color:#00ff88;">~1490 kcal ↑</div></div>
+          <div class="month-item"><div class="month-item-label">SMM</div><div class="month-item-val" style="color:#00ff88;">~29 kg ↑</div></div>
+          <div class="month-item"><div class="month-item-label">WHR</div><div class="month-item-val" style="color:#00ff88;">~0.91 ↓</div></div>
+        </div>
+        <div class="month-milestones" style="margin-top:14px;">
+          <div class="milestone"><span class="ms-icon">✅</span><span class="ms-text"><strong>BMR milestone:</strong> BMR reaches near-normal range (1490+ kcal). Your body now burns more at rest. Metabolism is fixed.</span></div>
+          <div class="milestone"><span class="ms-icon">✅</span><span class="ms-text"><strong>Leg muscle:</strong> Legs are approaching normal range. Squats, leg press numbers are significantly higher. No longer "Under".</span></div>
+          <div class="milestone"><span class="ms-icon">🎯</span><span class="ms-text"><strong>Visible sign:</strong> Shoulder-to-waist V-taper becoming visible. Veins visible in arms. Jaw definition improving.</span></div>
+          <div class="milestone"><span class="ms-icon">💡</span><span class="ms-text"><strong>Consider a deload week</strong> in Month 5 — reduce weights by 40% for 1 week to let joints and CNS fully recover.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MONTH 6-7 -->
+    <div class="month-card">
+      <div class="month-header" onclick="toggleMonth(this)">
+        <div class="month-num" style="background:rgba(0,255,136,.12);color:#00ff88;">M6–7</div>
+        <div class="month-title-wrap">
+          <div class="month-title">Month 6–7 — Goal Reached 🏆</div>
+          <div class="month-subtitle">Target weight achieved · All metrics in healthy range · Weeks 21–28</div>
+        </div>
+        <span class="month-badge" style="background:rgba(0,255,136,.12);color:#00ff88;border:1px solid rgba(0,255,136,.25);">TARGET ✓</span>
+        <span class="month-chev">▼</span>
+      </div>
+      <div class="month-body">
+        <div class="month-progress-row">
+          <span class="month-progress-label">Fat Lost</span>
+          <div class="month-progress-track"><div class="month-progress-fill" style="width:100%;background:linear-gradient(90deg,#00ff88,#00c870);"></div></div>
+          <span class="month-progress-val" style="color:#00ff88;">13.3 kg ✓</span>
+        </div>
+        <div class="month-progress-row">
+          <span class="month-progress-label">Muscle Gained</span>
+          <div class="month-progress-track"><div class="month-progress-fill" style="width:100%;background:linear-gradient(90deg,#00ff88,#00c870);"></div></div>
+          <span class="month-progress-val" style="color:#00ff88;">5.1 kg ✓</span>
+        </div>
+        <div class="month-progress-row">
+          <span class="month-progress-label">Weight</span>
+          <div class="month-progress-track"><div class="month-progress-fill" style="width:100%;background:linear-gradient(90deg,#00ff88,#00c870);"></div></div>
+          <span class="month-progress-val" style="color:#00ff88;">59.9 kg ✓</span>
+        </div>
+        <div class="month-items">
+          <div class="month-item"><div class="month-item-label">Body Fat %</div><div class="month-item-val" style="color:#00ff88;">~18–20% ✓</div></div>
+          <div class="month-item"><div class="month-item-label">BMR</div><div class="month-item-val" style="color:#00ff88;">~1520 kcal ✓</div></div>
+          <div class="month-item"><div class="month-item-label">Visceral Fat</div><div class="month-item-val" style="color:#00ff88;">~4–5 ✓</div></div>
+          <div class="month-item"><div class="month-item-label">Fitness Score</div><div class="month-item-val" style="color:#00ff88;">~78–82 ✓</div></div>
+        </div>
+        <div class="month-milestones" style="margin-top:14px;">
+          <div class="milestone"><span class="ms-icon">🏆</span><span class="ms-text"><strong>All goals achieved:</strong> 13.3 kg fat lost. 5.1 kg muscle gained. Target weight 59.9 kg reached. InBody score 78+.</span></div>
+          <div class="milestone"><span class="ms-icon">🏆</span><span class="ms-text"><strong>Health:</strong> Visceral fat in safe zone. BMR normalised. Waist-hip ratio below 0.90. Body water in range.</span></div>
+          <div class="milestone"><span class="ms-icon">🎯</span><span class="ms-text"><strong>What's next:</strong> Switch to maintenance phase. Increase calories to ~2200 kcal. Continue training to keep and build on results.</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /month-timeline -->
+
+  <!-- What slows / speeds you -->
+  <div class="bca-section-label">What Affects Your Timeline</div>
+  <div class="factor-grid">
+    <div class="factor-card" style="border-color:rgba(255,80,80,.25);">
+      <div class="factor-title" style="color:#ff5050;">⚠ Adds Weeks to Goal</div>
+      <div class="factor-item"><span>❌</span><span>Skipping gym 2+ days/week → <strong style="color:var(--text);">+4–6 weeks</strong></span></div>
+      <div class="factor-item"><span>❌</span><span>Eating outside 4+ times/week → <strong style="color:var(--text);">+6–8 weeks</strong></span></div>
+      <div class="factor-item"><span>❌</span><span>Sleeping less than 6 hrs → <strong style="color:var(--text);">+4 weeks</strong></span></div>
+      <div class="factor-item"><span>❌</span><span>Skipping leg days → <strong style="color:var(--text);">muscle goal delayed 3+ months</strong></span></div>
+      <div class="factor-item"><span>❌</span><span>Weekend binge eating → <strong style="color:var(--text);">erases whole week</strong></span></div>
+      <div class="factor-item"><span>❌</span><span>No cardio finishers → <strong style="color:var(--text);">+3–4 weeks</strong></span></div>
+    </div>
+    <div class="factor-card" style="border-color:rgba(0,255,136,.2);">
+      <div class="factor-title" style="color:#00ff88;">✅ Speeds Up Goal</div>
+      <div class="factor-item"><span>✅</span><span>Strict diet 6 days + 1 cheat meal → <strong style="color:var(--text);">on track</strong></span></div>
+      <div class="factor-item"><span>✅</span><span>7–8 hrs sleep every night → <strong style="color:var(--text);">−2–3 weeks</strong></span></div>
+      <div class="factor-item"><span>✅</span><span>Never skipping Wednesday leg day → <strong style="color:var(--text);">−3 weeks</strong></span></div>
+      <div class="factor-item"><span>✅</span><span>3.5 L water daily → <strong style="color:var(--text);">−1–2 weeks</strong></span></div>
+      <div class="factor-item"><span>✅</span><span>10 min HIIT every session → <strong style="color:var(--text);">−2–3 weeks</strong></span></div>
+      <div class="factor-item"><span>✅</span><span>Progressive overload weekly → <strong style="color:var(--text);">muscle goal faster</strong></span></div>
+    </div>
+  </div>
+
+  <!-- Target card -->
+  <div class="target-card">
+    <div class="target-title">🏆 Target: 59.9 kg by Month 6–7</div>
+    <div class="target-date">December 2025 – January 2026</div>
+    <div class="target-sub">Starting from 68.1 kg today · Lose 13.3 kg fat · Gain 5.1 kg muscle<br>Body fat: 32.7% → ~18–20% &nbsp;·&nbsp; Fitness score: 62 → 78+<br>Visceral fat: 9 → 4–5 &nbsp;·&nbsp; BMR: 1359 → 1520 kcal</div>
+  </div>
+
+  <!-- Weigh-in rule -->
+  <div class="weigh-in">
+    <div class="weigh-in-icon">⚖️</div>
+    <div>
+      <div class="weigh-in-title">Weigh-In Rule — Every 2 Weeks Only</div>
+      <div class="weigh-in-text">Do NOT weigh daily — water, food, and muscle fluctuations are misleading. Weigh every 2 weeks, same day, same time (morning, after bathroom, before food). Track in the InBody machine at gym monthly for accurate fat vs muscle data.</div>
+    </div>
+  </div>
+
+</div>
+</div><!-- /page-goal -->
+
+<div class="modal-overlay" id="modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="m-icon" id="m-icon">🏋️</div>
+      <div class="m-title-wrap"><div class="m-name" id="m-name">Exercise</div><div class="m-meta" id="m-meta"></div></div>
+      <div class="m-close" onclick="closeModal()">✕</div>
+    </div>
+    <div class="yt-cta">
+      <a id="yt-main-btn" class="yt-main-btn" href="#" target="_blank" rel="noopener">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 0 0 1.46 6.42 29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58A2.78 2.78 0 0 0 3.41 19.6C5.12 20 12 20 12 20s6.88 0 8.59-.4a2.78 2.78 0 0 0 1.95-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="red"/></svg>
+        Watch on YouTube
+      </a>
+      <p class="yt-note">Opens YouTube search with tutorial results for this exercise</p>
+    </div>
+    <div class="search-grid">
+      <div class="search-grid-label">Quick searches</div>
+      <div class="search-pills" id="search-pills"></div>
+    </div>
+    <div class="video-section">
+      <div class="video-section-label">Suggested searches — tap to open on YouTube</div>
+      <div class="video-cards" id="video-cards"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const EXERCISES = {
+  'Flat Bench Press':       {primary:'flat bench press proper form tutorial',cards:[{l:'Bench Press – Proper Form Guide',c:'Jeff Nippard',q:'flat bench press proper form jeff nippard',id:'gRVjAtPip0Y'},{l:'Bench Press Mistakes to Avoid',c:'Athlean-X',q:'bench press mistakes athlean x',id:'oN2PZjBTSNk'},{l:'Bench Press for Chest Growth',c:'Jeremy Ethier',q:'bench press chest muscle growth science',id:'vcBig73ojpE'}]},
+  'Incline DB Press':       {primary:'incline dumbbell press tutorial proper form',cards:[{l:'Incline DB Press – Perfect Form',c:'Jeff Nippard',q:'incline dumbbell press jeff nippard tutorial',id:'8iPEnn-ltC8'},{l:'Upper Chest Activation Tips',c:'Athlean-X',q:'upper chest activation incline press athlean',id:'DbFgADa2PL8'},{l:'Incline vs Flat Press',c:'Jeremy Ethier',q:'incline vs flat bench press upper chest',id:'J9oBNTb4468'}]},
+  'Lateral Raise':          {primary:'lateral raise proper form side deltoid tutorial',cards:[{l:'Lateral Raise – Complete Guide',c:'Jeff Nippard',q:'lateral raise complete guide jeff nippard',id:'kDqklk1ZESo'},{l:'Stop Making These Mistakes',c:'Athlean-X',q:'lateral raise mistakes athlean x',id:'EA7u4Q_8HQ0'},{l:'Build Side Delts Fast',c:'Jeremy Ethier',q:'best lateral raise side delt exercises',id:'KDO4RA5SiRs'}]},
+  'Shoulder Press':         {primary:'overhead shoulder press proper form tutorial',cards:[{l:'Overhead Press Technique Breakdown',c:'Alan Thrall',q:'overhead press technique alan thrall',id:'2yjwXTZbrDc'},{l:'DB vs Barbell Shoulder Press',c:'Jeff Nippard',q:'dumbbell vs barbell overhead press comparison',id:'qEwKCR5JCog'},{l:'Build Boulder Shoulders',c:'Jeremy Ethier',q:'shoulder press build boulder shoulders',id:'qSjsHqRMJao'}]},
+  'Triceps Pushdown':       {primary:'triceps cable pushdown proper form tutorial',cards:[{l:'Triceps Pushdown – Full Tutorial',c:'Scott Herman',q:'tricep pushdown cable form scott herman',id:'2-LAMcpzODU'},{l:'Cable Pushdown Mistakes',c:'Athlean-X',q:'tricep pushdown mistakes athlean x cable',id:'kiuVA0gs3EI'},{l:'Best Tricep Isolation',c:'Jeremy Ethier',q:'best tricep isolation exercises science',id:'nEF0bv2FW7s'}]},
+  'Skull Crusher':          {primary:'skull crusher EZ bar proper form tutorial',cards:[{l:'Skull Crushers – Complete Guide',c:'Jeff Nippard',q:'skull crushers complete guide jeff nippard',id:'d_KZxkY_5cM'},{l:'Skull Crusher Form & Variations',c:'Athlean-X',q:'skull crusher form variations athlean x',id:'NIvkdZiMB_Q'},{l:'EZ Bar vs Dumbbell Skull Crusher',c:'Jeremy Ethier',q:'ez bar vs dumbbell skull crusher',id:'dLdBs37BnwA'}]},
+  'Lat Pulldown':           {primary:'lat pulldown proper form wide grip tutorial',cards:[{l:'Lat Pulldown – Perfect Form',c:'Jeff Nippard',q:'lat pulldown perfect form jeff nippard',id:'CAwf7n6Luuc'},{l:'Lat Pulldown Grip Variations',c:'Athlean-X',q:'lat pulldown grip variations wide close neutral',id:'sU-HuFBSEDk'},{l:'Fix Your Lat Pulldown',c:'Jeremy Ethier',q:'fix lat pulldown mistakes',id:'qOZCnOqGHNk'}]},
+  'Seated Rowing':          {primary:'seated cable row proper form tutorial',cards:[{l:'Seated Cable Row – Tutorial',c:'Scott Herman',q:'seated cable row scott herman tutorial',id:'GZbfZ033f74'},{l:'Row for Back Thickness',c:'Athlean-X',q:'seated cable row back thickness athlean',id:'UCXxvVItLoM'},{l:'Best Back Rowing Technique',c:'Jeremy Ethier',q:'best back rowing technique',id:'xQNrFHEMhI4'}]},
+  'Bent Over Row':          {primary:'bent over barbell row proper form tutorial',cards:[{l:'Bent Over Row – Step by Step',c:'Alan Thrall',q:'bent over row step by step alan thrall',id:'FWJR5Ve8bnQ'},{l:'Barbell Row Mistakes Fixed',c:'Athlean-X',q:'barbell row mistakes athlean x',id:'YOV8RaKkIVk'},{l:'Row for Upper Back Thickness',c:'Jeff Nippard',q:'bent over row upper back thickness jeff nippard',id:'r4GJqBRzN8o'}]},
+  'Face Pull':              {primary:'face pull cable exercise proper form tutorial',cards:[{l:'Face Pull – Best Shoulder Exercise',c:'Athlean-X',q:'face pull best shoulder exercise athlean x',id:'rep-qVOkqgk'},{l:'Face Pull Proper Form Guide',c:'Jeff Nippard',q:'face pull proper form guide jeff nippard',id:'HSoHeSt2WXg'},{l:'Face Pull for Shoulder Health',c:'Jeremy Ethier',q:'face pull shoulder health injury prevention',id:'eIq5CB9JfKE'}]},
+  'Hammer Curl':            {primary:'hammer curl dumbbell proper form tutorial',cards:[{l:'Hammer Curl – Complete Tutorial',c:'Scott Herman',q:'hammer curl complete tutorial scott herman',id:'zC3nLlEvin4'},{l:'Hammer vs Bicep Curl',c:'Jeremy Ethier',q:'hammer curl vs bicep curl differences',id:'TwD-YGVP4Bk'},{l:'Grow Bigger Arms',c:'Athlean-X',q:'hammer curl bigger arms athlean',id:'hwMNuntmxgE'}]},
+  'DB Curl':                {primary:'dumbbell bicep curl proper form tutorial',cards:[{l:'Dumbbell Curl – Perfect Form',c:'Jeff Nippard',q:'dumbbell curl perfect form jeff nippard',id:'ykJmrZ5v0Oo'},{l:'Bicep Curl Mistakes to Avoid',c:'Athlean-X',q:'bicep curl mistakes athlean x',id:'av7-8igSXTs'},{l:'Maximum Bicep Peak',c:'Jeremy Ethier',q:'dumbbell curl maximum bicep peak',id:'soxrZlIl35U'}]},
+  'Squats':                 {primary:'barbell squat proper form tutorial',cards:[{l:'How to Squat – Perfect Form',c:'Alan Thrall',q:'how to squat perfect form alan thrall',id:'ultWZbUMPL8'},{l:'Squat Depth & Mistakes',c:'Jeff Nippard',q:'squat depth mistakes jeff nippard',id:'Dy28eq2PjcM'},{l:'Squat for Quad Dominance',c:'Athlean-X',q:'squat quad dominant technique',id:'U3HlEF_E9fo'}]},
+  'Leg Press':              {primary:'leg press machine proper form tutorial',cards:[{l:'Leg Press – Complete Tutorial',c:'Scott Herman',q:'leg press complete tutorial scott herman',id:'IZxyjW7MPJQ'},{l:'Foot Placement on Leg Press',c:'Athlean-X',q:'leg press foot placement muscles targeted guide',id:'sEM_zo73EU0'},{l:'Maximize Leg Press Results',c:'Jeremy Ethier',q:'maximize leg press results',id:'5HLW3BUHAxk'}]},
+  'Leg Extension':          {primary:'leg extension machine proper form tutorial',cards:[{l:'Leg Extension – Form & Tips',c:'Scott Herman',q:'leg extension form tips scott herman',id:'YyvSfVjQeL0'},{l:'Are Leg Extensions Safe?',c:'Athlean-X',q:'leg extension safe for knees',id:'m0FOpMEgero'},{l:'Best Quad Isolation Exercises',c:'Jeremy Ethier',q:'best quad isolation exercises leg extension',id:'kfNMZCL-4nQ'}]},
+  'Leg Curl':               {primary:'lying leg curl machine proper form tutorial',cards:[{l:'Leg Curl – Form Tutorial',c:'Scott Herman',q:'lying leg curl form tutorial scott herman',id:'1Tq3QdYUuHs'},{l:'Leg Curl for Hamstring Growth',c:'Athlean-X',q:'leg curl hamstring growth athlean x',id:'pOrq4-0D4Ek'},{l:'Seated vs Lying Leg Curl',c:'Jeremy Ethier',q:'seated vs lying leg curl comparison hamstring',id:'ELOCsoDSmrg'}]},
+  'ADD-ABD Machine':        {primary:'hip adductor abductor machine tutorial form',cards:[{l:'Adductor Machine Tutorial',c:'Scott Herman',q:'hip adductor machine tutorial scott herman',id:'HPnAECjxBTo'},{l:'Inner & Outer Thigh Machine',c:'Heather Robertson',q:'inner outer thigh machine adductor abductor',id:'jz2jXPMqpEI'},{l:'Build Strong Inner Thighs',c:'Jeremy Ethier',q:'build strong inner thighs adductor exercises',id:'Ih7rkMFMNmw'}]},
+  'Calf Raises':            {primary:'standing calf raise proper form tutorial',cards:[{l:'Calf Raise – Proper Technique',c:'Jeff Nippard',q:'calf raise proper technique jeff nippard',id:'JbyjNymZOt0'},{l:'Build Bigger Calves Fast',c:'Jeremy Ethier',q:'build bigger calves jeremy ethier',id:'gwLzBJYoWlQ'},{l:'Best Calf Training Tips',c:'Athlean-X',q:'best calf training tips athlean x',id:'7yIwuDs0JFY'}]},
+  'Decline Bench Press':    {primary:'decline barbell bench press proper form tutorial',cards:[{l:'Decline Press – Lower Chest Form',c:'Scott Herman',q:'decline bench press lower chest scott herman',id:'LfyQTgSJrCc'},{l:'Decline vs Flat Bench Press',c:'Jeff Nippard',q:'decline vs flat bench press comparison',id:'jRDCBJiSHEQ'},{l:'Best Lower Chest Exercises',c:'Jeremy Ethier',q:'best lower chest exercises decline press',id:'UmTXLkFJcKg'}]},
+  'High-Low Cable Fly':     {primary:'high to low cable fly chest tutorial form',cards:[{l:'Cable Fly High to Low Guide',c:'Scott Herman',q:'cable fly high to low chest scott herman',id:'taI4XDZSsMg'},{l:'Cable Crossover Full Guide',c:'Athlean-X',q:'cable crossover chest athlean x full guide',id:'genkMsNmz2E'},{l:'Best Cable Chest Exercises',c:'Jeremy Ethier',q:'best cable chest exercises',id:'JMMLpoAoXoE'}]},
+  'Low-High Cable Fly':     {primary:'low to high cable fly upper chest tutorial',cards:[{l:'Low to High Cable Fly Guide',c:'Scott Herman',q:'low to high cable fly upper chest scott herman',id:'genkMsNmz2E'},{l:'Upper Chest Cable Exercises',c:'Athlean-X',q:'upper chest cable exercises athlean x',id:'taI4XDZSsMg'},{l:'Cable Fly Variations Explained',c:'Jeremy Ethier',q:'cable fly variations upper lower chest',id:'JMMLpoAoXoE'}]},
+  'Bench Dips':             {primary:'bench dips triceps proper form tutorial',cards:[{l:'Bench Dips – Perfect Form',c:'Scott Herman',q:'bench dips perfect form scott herman',id:'c3ZGl4pHMpI'},{l:'Tricep Dips Tutorial Guide',c:'Athlean-X',q:'tricep bench dips tutorial athlean x',id:'6kALZikXxLc'},{l:'Bench Dips vs Cable Pushdown',c:'Jeremy Ethier',q:'bench dips vs cable pushdown triceps',id:'jOkyM4HoA9E'}]},
+  'V-Grip Lat Pulldown':    {primary:'v grip close grip lat pulldown tutorial form',cards:[{l:'V-Grip Lat Pulldown Form',c:'Scott Herman',q:'v grip lat pulldown form scott herman',id:'sU-HuFBSEDk'},{l:'Close vs Wide Grip Pulldown',c:'Jeff Nippard',q:'close grip vs wide grip lat pulldown comparison',id:'CAwf7n6Luuc'},{l:'Best Lat Pulldown Variations',c:'Jeremy Ethier',q:'best lat pulldown variations',id:'qOZCnOqGHNk'}]},
+  'Seated Rowing Wide Grip':{primary:'wide grip seated cable row tutorial form',cards:[{l:'Wide Grip Row Tutorial',c:'Scott Herman',q:'wide grip seated cable row scott herman',id:'UCXxvVItLoM'},{l:'Wide vs Narrow Grip Row',c:'Athlean-X',q:'wide vs narrow grip cable row back muscles',id:'GZbfZ033f74'},{l:'Upper Back Rowing Guide',c:'Jeremy Ethier',q:'upper back rowing wide grip',id:'xQNrFHEMhI4'}]},
+  'Iso-Pulldown':           {primary:'iso lat pulldown machine tutorial single arm',cards:[{l:'Iso Pulldown Machine Guide',c:'Tutorial',q:'iso pulldown machine tutorial gym guide',id:'CAwf7n6Luuc'},{l:'Single Arm Lat Pulldown Form',c:'Scott Herman',q:'single arm lat pulldown form scott herman',id:'sU-HuFBSEDk'},{l:'Unilateral Lat Training',c:'Jeremy Ethier',q:'unilateral lat training pulldown',id:'qOZCnOqGHNk'}]},
+  'Deadlift':               {primary:'deadlift proper form beginners tutorial',cards:[{l:'Deadlift – Complete Tutorial',c:'Alan Thrall',q:'deadlift complete tutorial alan thrall',id:'op9kVnSso6Q'},{l:'Deadlift Form Breakdown',c:'Jeff Nippard',q:'deadlift form breakdown jeff nippard',id:'VL5Ab0T6HBo'},{l:'Deadlift Mistakes to Fix',c:'Athlean-X',q:'deadlift mistakes athlean x',id:'r4MFmasS0kA'}]},
+  'Preacher Curl':          {primary:'preacher curl EZ bar proper form tutorial',cards:[{l:'Preacher Curl – Perfect Form',c:'Scott Herman',q:'preacher curl perfect form scott herman',id:'fIWP-FRFNU0'},{l:'EZ Bar Preacher Curl Guide',c:'Jeff Nippard',q:'ez bar preacher curl guide bicep',id:'av7-8igSXTs'},{l:'Preacher Curl Variations',c:'Jeremy Ethier',q:'preacher curl variations',id:'ykJmrZ5v0Oo'}]},
+  'Concentration Curl':     {primary:'concentration curl dumbbell proper form tutorial',cards:[{l:'Concentration Curl Tutorial',c:'Scott Herman',q:'concentration curl tutorial scott herman',id:'Jvj2wV0vOYU'},{l:'Best Bicep Peak Exercises',c:'Jeremy Ethier',q:'best bicep peak exercises concentration curl',id:'ykJmrZ5v0Oo'},{l:"Arnold's Concentration Curl Tips",c:'Classic bodybuilding',q:'concentration curl arnold schwarzenegger bicep peak',id:'soxrZlIl35U'}]},
+};
+
+// Tab click
+document.querySelectorAll('.day-tab').forEach(tab => {
+  tab.addEventListener('click', function() {
+    const i = parseInt(this.dataset.index);
+    document.querySelectorAll('.day-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.day-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('panel-' + i).classList.add('active');
+    this.classList.add('active');
+    this.scrollIntoView({behavior:'smooth', block:'nearest', inline:'center'});
+  });
+});
+
+// Auto-select today's tab
+// Mon(1)→index 0, Tue(2)→1, Wed(3)→2, Thu(4)→3, Fri(5)→4, Sat(6)→5, Sun(0)→rest
+(function initDay() {
+  const DAY_NAMES = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const jsDay = new Date().getDay(); // 0=Sun,1=Mon,...,6=Sat
+  const idx = (jsDay === 0) ? -1 : (jsDay - 1);
+  const tabs = document.querySelectorAll('.day-tab');
+
+  if (idx === -1) {
+    // Sunday — rest, show Day 1
+    tabs[0].classList.add('active');
+    document.getElementById('panel-0').classList.add('active');
+    const b = document.createElement('div');
+    b.className = 'today-banner rest';
+    b.innerHTML = '🛌 <strong>Sunday — Rest Day.</strong> Recovery is part of the program!';
+    document.getElementById('day-tabs').insertAdjacentElement('afterend', b);
+  } else {
+    tabs[idx].classList.add('active');
+    document.getElementById('panel-' + idx).classList.add('active');
+    const b = document.createElement('div');
+    b.className = 'today-banner workout';
+    b.innerHTML = '📅 Today is <strong>' + DAY_NAMES[idx] + '</strong> — showing your workout for today';
+    document.getElementById('day-tabs').insertAdjacentElement('afterend', b);
+    setTimeout(() => tabs[idx].scrollIntoView({behavior:'smooth', block:'nearest', inline:'center'}), 80);
+  }
+})();
+
+// Modal
+function ytUrl(q){ return 'https://www.youtube.com/results?search_query=' + encodeURIComponent(q); }
+
+function openModal(name, icon, meta) {
+  const data = EXERCISES[name];
+  const primary = data ? data.primary : name + ' exercise tutorial form';
+  document.getElementById('m-icon').textContent = icon;
+  document.getElementById('m-name').textContent = name;
+  document.getElementById('m-meta').textContent = meta;
+  document.getElementById('yt-main-btn').href = ytUrl(primary);
+
+  const pillsEl = document.getElementById('search-pills');
+  pillsEl.innerHTML = '';
+  [name+' tutorial', name+' proper form', name+' mistakes', name+' beginners'].forEach(p => {
+    const a = document.createElement('a');
+    a.className = 'search-pill';
+    a.href = ytUrl(p);
+    a.target = '_blank';
+    a.rel = 'noopener';
+    a.textContent = p;
+    pillsEl.appendChild(a);
+  });
+
+  const cardsEl = document.getElementById('video-cards');
+  cardsEl.innerHTML = '';
+  (data ? data.cards : []).forEach(({l,c,q,id}) => {
+    const a = document.createElement('a');
+    a.className = 'video-card';
+    // Link directly to the video if we have an id, else search
+    a.href = id ? 'https://www.youtube.com/watch?v=' + id : ytUrl(q);
+    a.target = '_blank';
+    a.rel = 'noopener';
+    const thumbSrc = id
+      ? 'https://img.youtube.com/vi/' + id + '/mqdefault.jpg'
+      : 'https://img.youtube.com/vi/dQw4w9WgXcQ/mqdefault.jpg';
+    a.innerHTML =
+      '<div class="video-thumb">' +
+        '<img src="' + thumbSrc + '" alt="' + l + '" loading="lazy" onerror="this.src=\'https://img.youtube.com/vi/' + id + '/default.jpg\'">' +
+        '<div class="thumb-overlay"><div class="play-btn"><svg viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div>' +
+      '</div>' +
+      '<div class="video-info">' +
+        '<div class="video-title">' + l + '</div>' +
+        '<div class="video-ch">' + c + '</div>' +
+      '</div>' +
+      '<span class="open-tag">↗ Open</span>';
+    cardsEl.appendChild(a);
+  });
+
+  document.getElementById('modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.addEventListener('keydown', e => { if(e.key === 'Escape') closeModal(); });
+
+// Page switcher
+function switchPage(id, btn) {
+  document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.page-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+// Diet meal toggle
+function toggleDietMeal(hdr) {
+  hdr.parentElement.classList.toggle('open');
+}
+
+// Month card toggle (Goal Timeline)
+function toggleMonth(hdr) {
+  hdr.parentElement.classList.toggle('open');
+}
+
+// Suggested plan day tabs
+function switchSugDay(idx, btn) {
+  document.querySelectorAll('.sug-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('#sug-day-tabs .ai-day-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('sug-' + idx).classList.add('active');
+  btn.classList.add('active');
+}
+
+// Auto-highlight today on suggested plan tabs
+(function markSugToday() {
+  const map = {1:0, 2:1, 3:2, 4:3, 5:4, 6:5};
+  const idx = map[new Date().getDay()];
+  const tabs = document.querySelectorAll('#sug-day-tabs .ai-day-btn');
+  if (idx !== undefined && tabs[idx]) {
+    tabs[idx].style.borderColor = 'rgba(0,229,255,.5)';
+    tabs[idx].style.color = '#00E5FF';
+    tabs[idx].textContent = tabs[idx].textContent + ' · TODAY';
+  }
+})();
+</script>
+</body>
+</html>
