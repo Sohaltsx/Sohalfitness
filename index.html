@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
 <title>Sandeep Singh — Fitness Hub</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
 <style>
@@ -461,6 +462,46 @@
   .weigh-in-text{font-size:13px;color:var(--muted);line-height:1.6;}
 
   @media(max-width:500px){.goal-stats{grid-template-columns:1fr 1fr;}.month-items{grid-template-columns:1fr;}.factor-grid{grid-template-columns:1fr;}}
+
+  /* ── Mobile polish ── */
+  html{-webkit-text-size-adjust:100%;}
+  body{-webkit-tap-highlight-color:transparent;padding-bottom:env(safe-area-inset-bottom);}
+  .page-btn,.day-tab,.exercise-card,.food-card,button{touch-action:manipulation;}
+  @media(max-width:600px){
+    header{padding:18px 16px 14px;}
+    .logo-icon{width:40px;height:40px;font-size:21px;}
+    .gym-logo{gap:10px;}
+    .gym-sub{font-size:11px;letter-spacing:2px;}
+    .member-badge{font-size:13px;padding:4px 11px;margin-top:6px;}
+    .page-nav{scroll-snap-type:x proximity;scrollbar-width:none;}
+    .page-nav::-webkit-scrollbar{display:none;}
+    .page-btn{height:44px;padding:0 14px;font-size:13px;letter-spacing:1px;scroll-snap-align:start;}
+    .day-tabs{top:44px;scrollbar-width:none;}
+    .day-tabs::-webkit-scrollbar{display:none;}
+    .day-tab{height:42px;padding:0 14px;font-size:13px;}
+    .stat{padding:12px 10px;}
+    .stat-val{font-size:18px;}
+    .stat-label{font-size:11px;letter-spacing:1px;}
+    .today-banner{font-size:14px;padding:8px 14px;}
+    main,.bca-wrap,.diet-wrap,.ai-wrap{padding:16px 14px 32px;}
+    .routine-wrap,.goal-wrap{padding:18px 14px 40px;}
+    .day-title{font-size:26px;}
+    .muscle-tag,.hint-bar{font-size:13px;}
+    .exercise-card{padding:12px;gap:10px;}
+    .exercise-card:hover{transform:none;}
+    .ex-icon{width:40px;height:40px;font-size:20px;}
+    .ex-name{font-size:16px;white-space:normal;}
+    .ex-meta{font-size:13px;}
+    .yt-badge{padding:5px 8px;font-size:13px;}
+    .ai-hero-sub,.score-banner{font-size:14px;}
+    .modal-overlay{align-items:flex-end;padding:0;}
+    .modal{border-radius:18px 18px 0 0;max-height:92dvh;}
+    .video-thumb{width:104px;height:62px;}
+  }
+  @media(max-width:360px){
+    .bca-macros,.diet-macros,.wc-grid,.bca-2col,.goal-stats{grid-template-columns:1fr 1fr;gap:8px;}
+    .quick-prompts,.ai-insights,.month-items,.factor-grid{grid-template-columns:1fr;}
+  }
 </style>
 </head>
 <body>
